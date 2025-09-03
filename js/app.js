@@ -1,5 +1,5 @@
 let devices = [];
-const SCALE = 1; // Escala para los teléfonos
+const SCALE = 2; // Escala para los teléfonos
 const GAP = 100; // Separación horizontal entre teléfonos
 const BASE_PHONE_HEIGHT = 400; // Altura deseada para el seleccionado
 const TOLERANCIA_MM = 1; // Ajustar tolerancia para mayor congruencia
