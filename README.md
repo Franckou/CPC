@@ -1,2 +1,2 @@
-# CPC
-Comparador de Pantallas de Celulares
+Comparador de Pantallas de Celulares (CPC)
+Programa hecho para visualizar y comparar las pantallas de distintos modelos de celulares, con una logica medianamente simple y un control de tolerancia estatico. Tambien es posible ajustar la escala de visualización de los celulares.
