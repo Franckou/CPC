@@ -1,0 +1,950 @@
+[
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A03",
+    "height_mm": 164.2,
+    "width_mm": 75.9,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A04",
+    "height_mm": 164.4,
+    "width_mm": 76.3,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A05",
+    "height_mm": 168.8,
+    "width_mm": 78.2,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.7,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A06",
+    "height_mm": 167.3,
+    "width_mm": 77.3,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.7,
+    "verified": true,
+    "sources": [
+      "https://www.samsung.com/levant/smartphones/galaxy-a/galaxy-a06-black-128gb-sm-a065fzkgmea/",
+      "https://www.kimovil.com/en/samsung-galaxy-a06/size"
+    ],
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A10",
+    "height_mm": 155.6,
+    "width_mm": 75.6,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.2,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A11",
+    "height_mm": 161.4,
+    "width_mm": 76.3,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A12",
+    "height_mm": 164.0,
+    "width_mm": 75.8,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A13",
+    "height_mm": 165.1,
+    "width_mm": 76.4,
+    "screen_inches": 6.6,
+    "aspect_ratio": "20:9",
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A14",
+    "height_mm": 167.7,
+    "width_mm": 78.0,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.6,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A15",
+    "height_mm": 160.1,
+    "width_mm": 76.8,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A16",
+    "height_mm": 164.2,
+    "width_mm": 76.5,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.6,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A20",
+    "height_mm": 158.4,
+    "width_mm": 74.7,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A21s",
+    "height_mm": 163.7,
+    "width_mm": 75.3,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A22",
+    "height_mm": 159.3,
+    "width_mm": 73.6,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A23",
+    "height_mm": 165.4,
+    "width_mm": 76.9,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.6,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A24",
+    "height_mm": 162.6,
+    "width_mm": 77.9,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A25 5G",
+    "height_mm": 161.0,
+    "width_mm": 76.5,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A26",
+    "height_mm": 162.3,
+    "width_mm": 77.9,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A30",
+    "height_mm": 158.5,
+    "width_mm": 74.7,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A31",
+    "height_mm": 159.3,
+    "width_mm": 73.1,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A32",
+    "height_mm": 158.9,
+    "width_mm": 73.6,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A33 5G",
+    "height_mm": 159.7,
+    "width_mm": 74.0,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A34 5G",
+    "height_mm": 161.3,
+    "width_mm": 78.1,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.6,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A50",
+    "height_mm": 158.5,
+    "width_mm": 74.7,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A51",
+    "height_mm": 158.5,
+    "width_mm": 73.6,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A52",
+    "height_mm": 159.9,
+    "width_mm": 75.1,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A53 5G",
+    "height_mm": 159.6,
+    "width_mm": 74.8,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A54 5G",
+    "height_mm": 158.2,
+    "width_mm": 76.7,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A55",
+    "height_mm": 161.1,
+    "width_mm": 77.4,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.6,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A56",
+    "height_mm": 158.9,
+    "width_mm": 76.7,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A70",
+    "height_mm": 164.3,
+    "width_mm": 76.7,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.7,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy A71",
+    "height_mm": 163.6,
+    "width_mm": 76.0,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.7,
+    "verified": false,
+    "curvatura_mm": 0.5
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S20",
+    "height_mm": 151.7,
+    "width_mm": 69.1,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.2,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S20 Ultra",
+    "height_mm": 166.9,
+    "width_mm": 76.0,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.9,
+    "verified": false,
+    "curvatura_mm": 1.6
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S21",
+    "height_mm": 151.7,
+    "width_mm": 71.2,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.2,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S21 Ultra",
+    "height_mm": 165.1,
+    "width_mm": 75.6,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.8,
+    "verified": false,
+    "curvatura_mm": 1.6
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S22",
+    "height_mm": 146.0,
+    "width_mm": 70.6,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.1,
+    "verified": false,
+    "curvatura_mm": 0.3
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S22 Ultra",
+    "height_mm": 163.3,
+    "width_mm": 77.9,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.8,
+    "verified": false,
+    "curvatura_mm": 1.6
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S23",
+    "height_mm": 146.3,
+    "width_mm": 70.9,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.1,
+    "verified": false,
+    "curvatura_mm": 0.3
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S23 Ultra",
+    "height_mm": 163.4,
+    "width_mm": 78.1,
+    "aspect_ratio": "19.3:9",
+    "screen_inches": 6.8,
+    "verified": true,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Samsung_Galaxy_S23",
+      "https://www.dxomark.com/samsung-galaxy-s23-ultra-display-test/"
+    ],
+    "curvatura_mm": 1.6
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S24",
+    "height_mm": 147.0,
+    "width_mm": 70.6,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.2,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S24 Ultra",
+    "height_mm": 162.3,
+    "width_mm": 79.0,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.8,
+    "verified": true,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Samsung_Galaxy_S24",
+      "https://www.theguardian.com/technology/2024/feb/05/samsung-galaxy-s24-ultra-review-the-swiss-army-knife-of-phones-now-with-ai",
+      "https://www.wired.com/review/samsung-galaxy-s24-s24-plus-and-s24-ultra/"
+    ],
+    "curvatura_mm": 0.25
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G04",
+    "height_mm": 163.49,
+    "width_mm": 74.53,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.56,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G54 5G",
+    "height_mm": 161.6,
+    "width_mm": 73.8,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G32",
+    "height_mm": 161.8,
+    "width_mm": 73.9,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Edge 40",
+    "height_mm": 158.4,
+    "width_mm": 72.0,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.55,
+    "verified": false,
+    "curvatura_mm": 1.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Edge 50",
+    "height_mm": 159.5,
+    "width_mm": 72.0,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.7,
+    "verified": false,
+    "curvatura_mm": 1.4
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S9",
+    "height_mm": 147.7,
+    "width_mm": 68.7,
+    "aspect_ratio": "18.5:9",
+    "screen_inches": 5.8,
+    "verified": false,
+    "curvatura_mm": 1.9
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S9+",
+    "height_mm": 158.1,
+    "width_mm": 73.8,
+    "aspect_ratio": "18.5:9",
+    "screen_inches": 6.2,
+    "verified": false,
+    "curvatura_mm": 1.9
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S10",
+    "height_mm": 149.9,
+    "width_mm": 70.4,
+    "aspect_ratio": "19:9",
+    "screen_inches": 6.1,
+    "verified": false,
+    "curvatura_mm": 1.9
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S10+",
+    "height_mm": 157.6,
+    "width_mm": 74.1,
+    "aspect_ratio": "19:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 1.9
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S10e",
+    "height_mm": 142.2,
+    "width_mm": 69.9,
+    "aspect_ratio": "19:9",
+    "screen_inches": 5.8,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Samsung",
+    "model": "Galaxy S10 Lite",
+    "height_mm": 162.5,
+    "width_mm": 75.6,
+    "aspect_ratio": "19:9",
+    "screen_inches": 6.7,
+    "verified": false,
+    "curvatura_mm": 1.9
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto E5",
+    "height_mm": 154.4,
+    "width_mm": 72.2,
+    "aspect_ratio": "18:9",
+    "screen_inches": 5.7,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto E5 Plus",
+    "height_mm": 160.9,
+    "width_mm": 75.3,
+    "aspect_ratio": "18:9",
+    "screen_inches": 6.0,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto E6",
+    "height_mm": 149.7,
+    "width_mm": 72.3,
+    "aspect_ratio": "18:9",
+    "screen_inches": 5.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto E7",
+    "height_mm": 164.8,
+    "width_mm": 75.7,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto E13",
+    "height_mm": 164.2,
+    "width_mm": 75.0,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto E20",
+    "height_mm": 164.8,
+    "width_mm": 75.6,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto E22",
+    "height_mm": 163.9,
+    "width_mm": 74.6,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto E32",
+    "height_mm": 164.0,
+    "width_mm": 75.0,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto E40",
+    "height_mm": 165.1,
+    "width_mm": 75.6,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto E50",
+    "height_mm": 165.5,
+    "width_mm": 76.0,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.6,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto E15",
+    "height_mm": 165.0,
+    "width_mm": 76.5,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.6,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G5",
+    "height_mm": 144.3,
+    "width_mm": 73.0,
+    "aspect_ratio": "20:9",
+    "screen_inches": 5.0,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G5 Plus",
+    "height_mm": 150.2,
+    "width_mm": 74.0,
+    "aspect_ratio": "20:9",
+    "screen_inches": 5.2,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G6",
+    "height_mm": 153.8,
+    "width_mm": 72.3,
+    "aspect_ratio": "20:9",
+    "screen_inches": 5.7,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G7",
+    "height_mm": 157.0,
+    "width_mm": 75.3,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.2,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G8",
+    "height_mm": 161.3,
+    "width_mm": 75.8,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G9",
+    "height_mm": 165.2,
+    "width_mm": 75.7,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G10",
+    "height_mm": 165.2,
+    "width_mm": 75.7,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G20",
+    "height_mm": 165.2,
+    "width_mm": 75.7,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G30",
+    "height_mm": 165.2,
+    "width_mm": 75.7,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G40 Fusion",
+    "height_mm": 169.6,
+    "width_mm": 75.9,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.8,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G50",
+    "height_mm": 164.9,
+    "width_mm": 74.9,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G60",
+    "height_mm": 169.6,
+    "width_mm": 75.9,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.8,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G71",
+    "height_mm": 161.2,
+    "width_mm": 73.9,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.4,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G84",
+    "height_mm": 160.1,
+    "width_mm": 74.4,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G75",
+    "height_mm": 161.9,
+    "width_mm": 74.5,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Motorola",
+    "model": "Moto G85",
+    "height_mm": 160.8,
+    "width_mm": 74.3,
+    "aspect_ratio": "20:9",
+    "screen_inches": 6.5,
+    "verified": false,
+    "curvatura_mm": 0.4
+  },
+  {
+    "brand": "Apple",
+    "model": "iPhone SE (2020)",
+    "height_mm": 138.4,
+    "width_mm": 67.3,
+    "aspect_ratio": "16:9",
+    "screen_inches": 4.7,
+    "verified": false,
+    "curvatura_mm": 0.2
+  },
+  {
+    "brand": "Apple",
+    "model": "iPhone SE (2022)",
+    "height_mm": 138.4,
+    "width_mm": 67.3,
+    "aspect_ratio": "16:9",
+    "screen_inches": 4.7,
+    "verified": false,
+    "curvatura_mm": 0.2
+  },
+  {
+    "brand": "Apple",
+    "model": "iPhone 12",
+    "height_mm": 146.7,
+    "width_mm": 71.5,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.1,
+    "verified": false,
+    "curvatura_mm": 0.2
+  },
+  {
+    "brand": "Apple",
+    "model": "iPhone 12 Mini",
+    "height_mm": 131.5,
+    "width_mm": 64.2,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 5.4,
+    "verified": false,
+    "curvatura_mm": 0.2
+  },
+  {
+    "brand": "Apple",
+    "model": "iPhone 13",
+    "height_mm": 146.7,
+    "width_mm": 71.5,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.1,
+    "verified": false,
+    "curvatura_mm": 0.2
+  },
+  {
+    "brand": "Apple",
+    "model": "iPhone 13 Mini",
+    "height_mm": 131.5,
+    "width_mm": 64.2,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 5.4,
+    "verified": false,
+    "curvatura_mm": 0.2
+  },
+  {
+    "brand": "Apple",
+    "model": "iPhone 14",
+    "height_mm": 146.7,
+    "width_mm": 71.5,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.1,
+    "verified": false,
+    "curvatura_mm": 0.2
+  },
+  {
+    "brand": "Apple",
+    "model": "iPhone 14 Plus",
+    "height_mm": 160.8,
+    "width_mm": 78.1,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.7,
+    "verified": false,
+    "curvatura_mm": 0.2
+  },
+  {
+    "brand": "Apple",
+    "model": "iPhone 15",
+    "height_mm": 147.6,
+    "width_mm": 71.6,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.1,
+    "verified": true,
+    "sources": [
+      "https://support.apple.com/en-us/111831",
+      "https://www.apple.com/iphone-15/specs/"
+    ],
+    "curvatura_mm": 0.2
+  },
+  {
+    "brand": "Apple",
+    "model": "iPhone 15 Plus",
+    "height_mm": 160.9,
+    "width_mm": 77.8,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.7,
+    "verified": true,
+    "sources": [
+      "https://support.apple.com/en-us/111830"
+    ],
+    "curvatura_mm": 0.2
+  },
+  {
+    "brand": "Apple",
+    "model": "iPhone 16",
+    "height_mm": 147.6,
+    "width_mm": 71.6,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.1,
+    "verified": true,
+    "sources": [
+      "https://support.apple.com/en-us/121100",
+      "https://www.apple.com/iphone-16/specs/"
+    ],
+    "curvatura_mm": 0.2
+  },
+  {
+    "brand": "Apple",
+    "model": "iPhone 16 Plus",
+    "height_mm": 160.9,
+    "width_mm": 77.8,
+    "aspect_ratio": "19.5:9",
+    "screen_inches": 6.7,
+    "verified": true,
+    "sources": [
+      "https://support.apple.com/en-us/121102",
+      "https://www.apple.com/iphone-16-plus/specs/"
+    ],
+    "curvatura_mm": 0.2
+  }
+]

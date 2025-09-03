@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Buscador de móviles</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/app.js" defer></script>
+  </head>
+  <body>
+    <h2>Comparador de Pantallas de Celulares</h2>
+
+    <!-- Input buscador -->
+    <div class="inputs">
+      <input
+        id="buscador"
+        placeholder="Buscar un modelo..."
+        autocomplete="off"
+      />
+      <!-- Sugerencias de autocompletar -->
+      <div id="sugerencias" class="sugerencias"></div>
+    </div>
+
+    <!-- Zona de comparación -->
+    <div id="comparacion">
+      <!-- Lista lateral de modelos -->
+      <div id="list" class="listado"></div>
+
+      <!-- Contenedor de teléfonos (canvas) -->
+      <div id="canvas" class="canvas">
+        <!-- Los teléfonos y líneas se generan dinámicamente desde JS -->
+      </div>
+    </div>
+  </body>
+</html>
