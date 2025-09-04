@@ -2,7 +2,7 @@
 let devices = [];
 let lastSelected = null;
 
-const TOLERANCIA_DIMENSIONAL = 1; // mm de diferencia permitida en alto y ancho
+const TOLERANCIA_DIMENSIONAL = 0; // mm de diferencia permitida en alto y ancho
 const TOLERANCIA_CURVATURA = 0;   // mm de diferencia permitida en curvatura
 const ESCALA_VISUAL = 2;        // Escala fija para visualización
 
