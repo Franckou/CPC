@@ -49,7 +49,7 @@ function comparePhones(selected) {
   canvas.style.justifyContent = "flex-start";
   canvas.style.gap = "100px";
   canvas.style.height = "500px";
-  canvas.style.padding = "40px 0 20px 0";
+  canvas.style.padding = "30px 20px 30px 20px";
   canvas.style.overflowX = "auto";
   canvas.style.scrollSnapType = "x mandatory";
   canvas.scrollLeft = 0;
@@ -139,7 +139,7 @@ function setupSearch() {
   });
 }
 
-// 🚀 Inicializar
+// Inicializar
 loadPhones().then(() => {
   setupSearch();
 });
