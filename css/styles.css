@@ -6,12 +6,11 @@
   font-style: normal;
 }
 
-.body {
+body {
   font-family: "Garet", sans-serif;
   margin: 0;
   background-color: #ffffff; /* Fondo principal */
   color: #333333; /* Texto principal */
-  height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -156,8 +155,7 @@ h2 {
 
 @media (max-width: 768px) {
   html,
-  .body {
-    margin: 0;
+  body {
     width: 100%;
     overflow-x: hidden;
   }
@@ -165,7 +163,7 @@ h2 {
     padding: 20px;
   }
   h2 {
-    font-size: 30px;
+    font-size: clamp(20px, 4vw, 30px);
   }
   .inputs {
     width: 80vw;
@@ -180,11 +178,13 @@ h2 {
     font-size: 14px;
   }
   #comparacion {
+    flex-wrap: wrap;
     flex-direction: column;
     margin: 20px 0;
   }
   #comparacion,
-  .canvasm .listado {
+  .canvas,
+  .listado {
     min-width: 0;
   }
   .listado {
@@ -195,7 +195,6 @@ h2 {
     padding: 16px;
   }
   .canvas {
-    flex-direction: row;
     display: flex;
     overflow-x: auto;
     overflow-y: hidden;
@@ -215,7 +214,6 @@ h2 {
 
   .phone {
     width: 100%;
-    max-width: 100%;
     box-sizing: border-box;
     margin-bottom: 20px;
   }
