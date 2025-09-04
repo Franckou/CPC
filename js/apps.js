@@ -57,7 +57,7 @@ function comparePhones(selected) {
   canvas.style.boxSizing = "border-box";
 
   // Renderizar telefonos
-  ordenados.forEach((d) => {
+  ordenados.forEach((d, i) => {
     const phone = document.createElement("div");
     phone.className = "phone";
     phone.style.height = `${d.height_mm * ESCALA_VISUAL}px`;
@@ -72,7 +72,6 @@ function comparePhones(selected) {
     phone.style.position = "relative";
     phone.style.boxSizing = "border-box";
     phone.style.marginBottom = "20px";
-    if (i === 0) phone.style.marginLeft = "20px";
 
     // Nombre del modelo
     const label = document.createElement("div");
