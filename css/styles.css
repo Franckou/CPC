@@ -189,7 +189,7 @@ h2 {
   }
   .listado {
     width: 100%;
-    max-width: 88vw;
+    max-width: 88%;
     height: auto;
     margin: 16px;
     padding: 16px;
@@ -199,7 +199,7 @@ h2 {
     overflow-x: auto;
     overflow-y: hidden;
     width: 100%;
-    max-width: 88vw;
+    max-width: 88%;
     min-height: 300px;
     margin: 16px;
     padding: 16px;
