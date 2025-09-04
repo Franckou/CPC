@@ -1,7 +1,7 @@
 /* fuente Garet */
 @font-face {
   font-family: "Garet";
-  src: url("/vidrios-compatibles/fonts/Garet-Book.ttf") format("truetype");
+  src: url("/fonts/Garet-Book.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -154,9 +154,10 @@ h2 {
   transform: translateY(-4px);
 }
 
-@media screen and (max-width: 768px) {
+@media (max-width: 768px) {
   html,
   .body {
+    margin: 0;
     width: 100%;
     overflow-x: hidden;
   }
