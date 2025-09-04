@@ -2,9 +2,9 @@
 let devices = [];
 let lastSelected = null;
 
-const TOLERANCIA_DIMENSIONAL = 1.5; // mm de diferencia permitida en alto y ancho
-const TOLERANCIA_CURVATURA = 0.5;   // mm de diferencia permitida en curvatura
-const ESCALA_VISUAL = 3;        // Escala fija para visualización
+const TOLERANCIA_DIMENSIONAL = 1; // mm de diferencia permitida en alto y ancho
+const TOLERANCIA_CURVATURA = 0;   // mm de diferencia permitida en curvatura
+const ESCALA_VISUAL = 1.5;        // Escala fija para visualización
 
 // Cargar datos desde JSON
 async function loadPhones() {
