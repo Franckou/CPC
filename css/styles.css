@@ -156,7 +156,7 @@ h2 {
 @media (max-width: 768px) {
   html,
   body {
-    width: 100%;
+    width: 100vw;
     overflow-x: hidden;
   }
   #main-container {
@@ -182,14 +182,9 @@ h2 {
     flex-direction: column;
     margin: 20px 0;
   }
-  #comparacion,
-  .canvas,
-  .listado {
-    min-width: 0;
-  }
   .listado {
     width: 100%;
-    max-width: 88%;
+    max-width: 85vw;
     height: auto;
     margin: 16px;
     padding: 16px;
@@ -199,7 +194,7 @@ h2 {
     overflow-x: auto;
     overflow-y: hidden;
     width: 100%;
-    max-width: 88%;
+    max-width: 85vw;
     min-height: 300px;
     margin: 16px;
     padding: 16px;
