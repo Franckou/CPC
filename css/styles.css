@@ -1,4 +1,14 @@
-/* fuente Garet */
+/* Etiquetas semánticas base */
+main,
+header,
+section,
+aside {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Fuente Garet */
 @font-face {
   font-family: "Garet";
   src: url("/fonts/Garet-Book.ttf") format("truetype");
@@ -9,13 +19,13 @@
 body {
   font-family: "Garet", sans-serif;
   margin: 0;
-  background-color: #ffffff; /* Fondo principal */
-  color: #333333; /* Texto principal */
+  background-color: #ffffff;
+  color: #333333;
   display: flex;
   flex-direction: column;
 }
 
-#main-container {
+main#main-container {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -23,16 +33,15 @@ body {
   padding: 20px 40px;
 }
 
-h2 {
-  font-family: "Garet", sans-serif;
+header h2 {
   font-size: 25px;
-  font-weight: 700; /* Bold para títulos */
-  color: #000000; /* Texto principal */
+  font-weight: 700;
+  color: #000000;
   text-align: center;
 }
 
-/*Buscador y sugerencias*/
-.inputs {
+/* Buscador y sugerencias */
+section.inputs {
   position: relative;
   width: 20vw;
   margin: 0 auto;
@@ -46,61 +55,64 @@ h2 {
   width: 100%;
   padding: 12px 16px;
   font-size: 15px;
-  border: 1px solid #dddddd; /* Borde gris claro */
+  border: 1px solid #dddddd;
   border-radius: 9999px;
   outline: none;
   transition: all 0.2s ease-in-out;
-  font-family: "garet", sans-serif;
+  font-family: "Garet", sans-serif;
 }
 
 #buscador:focus {
   border-color: #dddddd;
   box-shadow: 0 0 0 3px rgba(168, 168, 168, 0.2);
 }
+
 #sugerencias {
   position: absolute;
   top: 100%;
   width: 100%;
   background: #ffffff;
-  width: 100%;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-height: 400px;
   overflow-y: auto;
   z-index: 10;
-  font-family: "garet", sans-serif;
+  font-family: "Garet", sans-serif;
 }
 
 #sugerencias div {
   padding: 8px 16px;
-  border-bottom: 1px solid #eee; /* Línea divisoria gris claro */
+  border-bottom: 1px solid #eee;
   font-size: 14px;
   cursor: pointer;
 }
+
 #sugerencias div:hover {
-  background: #f5f5f5; /* Fondo gris claro al pasar el mouse */
+  background: #f5f5f5;
 }
-/* panel de comparacion */
+
+/* Panel de comparación */
 #comparacion {
   display: flex;
-  margin: 30px 15px 30px 15px;
+  margin: 30px 15px;
   flex: 1;
 }
 
-/* listado */
-.listado {
-  font-family: "garet", sans-serif;
+/* Listado lateral */
+aside.listado {
+  font-family: "Garet", sans-serif;
   width: 300px;
   height: 565px;
   min-height: 500px;
   background: #ffffff;
-  border: 1px solid #dddddd; /* Borde gris claro */
+  border: 1px solid #dddddd;
   border-radius: 10px;
   padding: 12px;
   margin-left: 1vw;
   overflow-y: auto;
   box-shadow: 0 0 0 3px rgba(168, 168, 168, 0.2);
 }
+
 .list-item {
   padding: 10px 12px;
   cursor: pointer;
@@ -111,15 +123,15 @@ h2 {
 }
 
 .list-item:hover {
-  background: #f5f5f5; /* Fondo gris claro al pasar el mouse */
+  background: #f5f5f5;
 }
 
 .list-item.active {
-  background: #e0f7fa; /* Fondo azul claro para el elemento activo */
+  background: #e0f7fa;
   font-weight: 600;
 }
 
-/* contenedor canvas */
+/* Canvas de teléfonos */
 .canvas {
   padding-right: 20px;
   min-height: 500px;
@@ -128,16 +140,17 @@ h2 {
   margin-right: 15px;
   flex: 1;
   background: #ffffff;
-  border: 1px solid #dddddd; /* Borde gris claro */
+  border: 1px solid #dddddd;
   border-radius: 10px;
   display: flex;
   overflow-x: auto;
-  scrollbar-color: #97a2af; /* Personalizar barra de desplazamiento */
+  scrollbar-color: #97a2af;
   scrollbar-width: thin;
   box-shadow: 0 0 0 3px rgba(168, 168, 168, 0.2);
 }
+
 .phone {
-  font-family: "garet", sans-serif;
+  font-family: "Garet", sans-serif;
   padding: 20px;
   background: #ffffff;
   display: flex;
@@ -149,46 +162,56 @@ h2 {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
   transition: transform 0.2s;
 }
+
 .phone:hover {
   transform: translateY(-4px);
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   html,
   body {
     width: 100vw;
     overflow-x: hidden;
   }
-  #main-container {
+
+  main#main-container {
     padding: 20px;
   }
-  h2 {
+
+  header h2 {
     font-size: clamp(20px, 4vw, 30px);
   }
-  .inputs {
+
+  section.inputs {
     width: 80vw;
     margin: 0 auto;
   }
+
   #buscador {
     padding: 14px 18px;
     font-size: 16px;
   }
+
   #sugerencias {
     max-height: 300px;
     font-size: 14px;
   }
+
   #comparacion {
     flex-wrap: wrap;
     flex-direction: column;
     margin: 20px 0;
   }
-  .listado {
+
+  aside.listado {
     width: 100%;
     max-width: 85vw;
     height: auto;
     margin: 16px;
     padding: 16px;
   }
+
   .canvas {
     display: flex;
     overflow-x: auto;
@@ -199,9 +222,11 @@ h2 {
     margin: 16px;
     padding: 16px;
   }
+
   .canvas::-webkit-scrollbar {
     height: 6px;
   }
+
   .canvas::-webkit-scrollbar-thumb {
     background: #97a2af;
     border-radius: 3px;

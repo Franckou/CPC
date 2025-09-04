@@ -9,28 +9,41 @@
     <script src="js/app.js" defer></script>
   </head>
   <body>
-    <h2>Comparador de Pantallas de Celulares</h2>
+    <main id="main-container">
+      <header>
+        <h2>Comparador de Pantallas de Celulares</h2>
+      </header>
 
-    <!-- Input buscador -->
-    <div class="inputs">
-      <input
-        id="buscador"
-        placeholder="Buscar un modelo..."
-        autocomplete="off"
-      />
-      <!-- Sugerencias de autocompletar -->
-      <div id="sugerencias" class="sugerencias"></div>
-    </div>
+      <!-- Buscador -->
+      <section class="inputs" aria-label="Buscador de modelos">
+        <input
+          id="buscador"
+          placeholder="Buscar un modelo..."
+          autocomplete="off"
+          aria-label="Buscar modelo de celular"
+        />
+        <div id="sugerencias" class="sugerencias" role="listbox"></div>
+      </section>
 
-    <!-- Zona de comparación -->
-    <div id="comparacion">
-      <!-- Lista lateral de modelos -->
-      <div id="list" class="listado"></div>
+      <!-- Zona de comparación -->
+      <section id="comparacion" aria-label="Zona de comparación">
+        <!-- Lista lateral de modelos -->
+        <aside
+          id="list"
+          class="listado"
+          aria-label="Lista de modelos disponibles"
+        ></aside>
 
-      <!-- Contenedor de teléfonos (canvas) -->
-      <div id="canvas" class="canvas">
-        <!-- Los teléfonos y líneas se generan dinámicamente desde JS -->
-      </div>
-    </div>
+        <!-- Vista previa de teléfonos -->
+        <div
+          id="canvas"
+          class="canvas"
+          role="region"
+          aria-label="Vista previa de teléfonos"
+        >
+          <!-- Render dinámico desde JS -->
+        </div>
+      </section>
+    </main>
   </body>
 </html>
