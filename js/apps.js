@@ -4,7 +4,7 @@ let lastSelected = null;
 
 const TOLERANCIA_DIMENSIONAL = 1.5; // mm de diferencia permitida en alto y ancho
 const TOLERANCIA_CURVATURA = 0.5;   // mm de diferencia permitida en curvatura
-const ESCALA_VISUAL = 2.5;        // Escala fija para visualización
+const ESCALA_VISUAL = 3;        // Escala fija para visualización
 
 // Cargar datos desde JSON
 async function loadPhones() {
@@ -49,21 +49,12 @@ function comparePhones(selected) {
   canvas.style.justifyContent = "flex-start";
   canvas.style.gap = "100px";
   canvas.style.height = "500px";
-  canvas.style.padding = "40px 20px 0 20px";
+  canvas.style.padding = "40px 0 20px 0";
   canvas.style.overflowX = "auto";
   canvas.style.scrollSnapType = "x mandatory";
+  canvas.scrollLeft = 0;
   canvas.style.position = "relative";
   canvas.style.boxSizing = "border-box";
-
-  // Línea base
-  const baseLine = document.createElement("div");
-  baseLine.style.position = "absolute";
-  baseLine.style.bottom = "0";
-  baseLine.style.left = "0";
-  baseLine.style.width = "100%";
-  baseLine.style.height = "2px";
-  baseLine.style.backgroundColor = "#ccc";
-  canvas.appendChild(baseLine);
 
   // Renderizar telefonos
   ordenados.forEach((d) => {
@@ -80,27 +71,18 @@ function comparePhones(selected) {
     phone.style.scrollSnapAlign = "start";
     phone.style.position = "relative";
     phone.style.boxSizing = "border-box";
+    phone.style.marginBottom = "20px";
+    if (i === 0) phone.style.marginLeft = "20px";
 
     // Nombre del modelo
     const label = document.createElement("div");
     label.className = "phone-label";
     label.textContent = `${d.brand} ${d.model}`;
-    label.style.position = "absolute";
-    label.style.bottom = "-24px";
-    label.style.width = "100%";
-    label.style.textAlign = "center";
     label.style.fontSize = "14px";
-
-    // Dimensiones reales
-    const dimensiones = document.createElement("div");
-    dimensiones.className = "phone-dimensions";
-    dimensiones.textContent = `${d.width_mm}mm × ${d.height_mm}mm`;
-    dimensiones.style.fontSize = "12px";
-    dimensiones.style.marginTop = "4px";
-    dimensiones.style.textAlign = "center";
+    label.style.marginTop = "4px";
+    label.style.textAlign = "center";
 
     phone.appendChild(label);
-    phone.appendChild(dimensiones);
     canvas.appendChild(phone);
 
     // Lista lateral
