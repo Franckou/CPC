@@ -265,6 +265,16 @@ body.dark-mode * {
 
 /* Responsive */
 @media (max-width: 768px) {
+  header {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 8px;
+  }
+  #toggle-dark {
+    order: -1;
+    margin-bottom: 5px;
+  }
   html,
   body {
     width: 100vw;
