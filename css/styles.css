@@ -101,33 +101,19 @@ body.dark-mode #clear-search:hover {
   position: absolute;
   top: 100%;
   width: 100%;
-  background: transparent; /* transparente */
+  background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   max-height: 400px;
   overflow-y: auto;
   z-index: 10;
   font-family: "Garet", sans-serif;
-  box-shadow: none; /* sin sombra */
 }
 
 #sugerencias div {
   padding: 8px 16px;
   font-size: 14px;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.8); /* cápsula suave */
-  border-radius: 6px;
-  margin-bottom: 4px;
-}
-
-#sugerencias div:hover {
-  background: rgba(245, 245, 245, 0.9);
-}
-
-body.dark-mode #sugerencias div {
-  background: rgba(30, 30, 30, 0.8);
-}
-body.dark-mode #sugerencias div:hover {
-  background: rgba(50, 50, 50, 0.9);
 }
 
 /* Panel de comparación */
