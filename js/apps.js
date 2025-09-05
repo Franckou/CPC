@@ -1,11 +1,10 @@
-// Configuracion
+// Configuración
 let devices = [];
 let lastSelected = null;
 
-const TOLERANCIA_DIMENSIONAL = 0.9; // mm de diferencia permitida en alto y ancho
-// refiriendose a curvatura como el radio de curvatura de las esquinas, no como el "Edge"
+const TOLERANCIA_DIMENSIONAL = 1.0; // mm de diferencia permitida en alto y ancho
 const TOLERANCIA_CURVATURA = 0.5;   // mm de diferencia permitida en curvatura
-const ESCALA_VISUAL = 2; // Escala fija para visualizacion
+const ESCALA_VISUAL = 2;            // Escala fija para visualización
 
 // Cargar datos desde JSON
 async function loadPhones() {
@@ -19,7 +18,7 @@ async function loadPhones() {
   }
 }
 
-// Comparar telefonos similares
+// Comparar teléfonos similares
 function comparePhones(selected) {
   lastSelected = selected;
 
@@ -37,6 +36,7 @@ function comparePhones(selected) {
     return;
   }
 
+  // Filtrar y ordenar por distancia
   const similares = devices
     .filter(
       (d) =>
@@ -47,15 +47,19 @@ function comparePhones(selected) {
         Math.abs(d.width_mm - selected.width_mm) <= TOLERANCIA_DIMENSIONAL &&
         Math.abs(d.curvatura_mm - selected.curvatura_mm) <= TOLERANCIA_CURVATURA
     )
-    .map((d) => ({
-      ...d,
-      distancia: Math.sqrt(
-        Math.pow(d.height_mm - selected.height_mm, 2) +
-          Math.pow(d.width_mm - selected.width_mm, 2) +
-          Math.pow(d.curvatura_mm - selected.curvatura_mm, 2)
-      ),
-    }))
-    .sort((a, b) => a.distancia - b.distancia);
+    .sort((a, b) => {
+      const distA = Math.sqrt(
+        Math.pow(a.height_mm - selected.height_mm, 2) +
+        Math.pow(a.width_mm - selected.width_mm, 2) +
+        Math.pow(a.curvatura_mm - selected.curvatura_mm, 2)
+      );
+      const distB = Math.sqrt(
+        Math.pow(b.height_mm - selected.height_mm, 2) +
+        Math.pow(b.width_mm - selected.width_mm, 2) +
+        Math.pow(b.curvatura_mm - selected.curvatura_mm, 2)
+      );
+      return distA - distB;
+    });
 
   const ordenados = [
     selected,
@@ -105,7 +109,7 @@ function comparePhones(selected) {
 
     const li = document.createElement("div");
     li.className = "list-item";
-    li.textContent = `${d.brand} ${d.model} (${d.distancia?.toFixed(2) ?? 0})`;
+    li.textContent = `${d.brand} ${d.model}`;
     list.appendChild(li);
   });
 }
@@ -119,26 +123,11 @@ function setupSearch() {
     const query = e.target.value.toLowerCase();
     sugerencias.innerHTML = "";
 
-    if (!query) {
-    // Mostrar todos los dispositivos si no hay texto
-    const resultados = devices;
-    resultados.forEach((d) => {
-            const div = document.createElement("div");
-            div.textContent = `${d.brand} ${d.model}`;
-            div.onclick = () => {
-            buscador.value = div.textContent;
-            sugerencias.innerHTML = "";
-            comparePhones(d);
-            };
-        sugerencias.appendChild(div);
-    });
-    return;
-}
-
-
-    const resultados = devices.filter((d) =>
-      `${d.brand} ${d.model}`.toLowerCase().includes(query)
-    );
+    const resultados = !query
+      ? devices
+      : devices.filter((d) =>
+          `${d.brand} ${d.model}`.toLowerCase().includes(query)
+        );
 
     resultados.forEach((d) => {
       const div = document.createElement("div");
