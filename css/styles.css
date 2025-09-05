@@ -303,7 +303,35 @@ body.dark-mode * {
     padding: 14px 18px;
     font-size: 16px;
   }
+  .search-wrapper {
+  position: relative;
+  width: 100%;
+}
 
+  #clear-search {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    color: #888;
+    cursor: pointer;
+    display: none; /* oculto por defecto */
+    padding: 0;
+  }
+
+  #clear-search:hover {
+    color: #333;
+  }
+
+  body.dark-mode #clear-search {
+    color: #bbb;
+  }
+  body.dark-mode #clear-search:hover {
+    color: #fff;
+  }
   #sugerencias {
     max-height: 300px;
     font-size: 14px;

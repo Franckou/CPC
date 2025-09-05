@@ -139,12 +139,19 @@ function setupSearch() {
     return;
   }
 
+  const clearBtn = document.getElementById("clear-search");
+
   buscador.addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase().trim();
     sugerencias.innerHTML = "";
 
+    // Mostrar u ocultar el botón de borrar
+    clearBtn.style.display = query ? "block" : "none";
+
     const resultados = query
-      ? devices.filter((d) => `${d.brand} ${d.model}`.toLowerCase().includes(query))
+      ? devices.filter((d) =>
+          `${d.brand} ${d.model}`.toLowerCase().includes(query)
+        )
       : devices;
 
     resultados.forEach((d) => {
@@ -153,16 +160,26 @@ function setupSearch() {
       div.onclick = () => {
         buscador.value = div.textContent;
         sugerencias.innerHTML = "";
+        clearBtn.style.display = "block";
         comparePhones(d);
       };
       sugerencias.appendChild(div);
     });
   });
 
+  // Acción del botón de borrar
+  clearBtn.addEventListener("click", () => {
+    buscador.value = "";
+    sugerencias.innerHTML = "";
+    clearBtn.style.display = "none";
+    buscador.focus();
+  });
+}
+
+
   buscador.addEventListener("blur", () => {
     setTimeout(() => (sugerencias.innerHTML = ""), 200);
   });
-}
 
 // Botón de modo oscuro
 const toggleBtn = document.getElementById("toggle-dark");
