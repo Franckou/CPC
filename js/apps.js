@@ -48,7 +48,7 @@ function comparePhones(selected) {
   canvas.style.display = "flex";
   canvas.style.alignItems = "flex-end";
   canvas.style.justifyContent = "flex-start";
-  canvas.style.gap = "100px";
+  canvas.style.gap = "25px";
   canvas.style.maxHeight = "500px";
   canvas.style.padding = "10px 20px 30px 20px";
   canvas.style.overflowX = "auto";
