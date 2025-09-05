@@ -222,6 +222,46 @@ body.dark-mode #buscador {
 body.dark-mode #sugerencias div:hover {
   background-color: #333;
 }
+/* Scrollbars modernos y estéticos */
+
+/* WebKit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px;   /* scroll vertical */
+  height: 8px;  /* scroll horizontal */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* pista invisible */
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 150, 150, 0.5);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 150, 150, 0.8);
+}
+
+/* Scrollbars en modo oscuro */
+body.dark-mode ::-webkit-scrollbar-thumb {
+  background: rgba(200, 200, 200, 0.3);
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 200, 200, 0.6);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(150, 150, 150, 0.5) transparent;
+}
+
+body.dark-mode * {
+  scrollbar-color: rgba(200, 200, 200, 0.3) transparent;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
