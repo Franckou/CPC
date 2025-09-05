@@ -71,7 +71,7 @@ function comparePhones(selected) {
     phone.style.justifyContent = "flex-end";
     phone.style.position = "relative";
     phone.style.boxSizing = "border-box";
-    phone.style.margin = "30px 20px 35px 0px";
+    phone.style.margin = "30px 20px 35px 20px";
 
     // Nombre del modelo
     const label = document.createElement("div");
