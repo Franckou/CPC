@@ -145,7 +145,7 @@ aside.listado {
   display: flex;
   overflow-x: auto;
   scrollbar-color: #97a2af;
-  scrollbar-width: thin;
+  /* scrollbar-width: thin; */
   box-shadow: 0 0 0 3px rgba(168, 168, 168, 0.2);
 }
 
