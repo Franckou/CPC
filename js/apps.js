@@ -49,12 +49,10 @@ function comparePhones(selected) {
   canvas.style.alignItems = "flex-end";
   canvas.style.justifyContent = "flex-start";
   canvas.style.gap = "100px";
-  canvas.style.height = "500px";
+  canvas.style.maxHeight = "565px";
   canvas.style.padding = "10px 20px 40px 20px";
   canvas.style.overflowX = "auto";
   canvas.style.scrollSnapType = "x mandatory";
-  phone.style.scrollSnapAlign = "start";
-  canvas.scrollLeft = 0;
   canvas.style.position = "relative";
   canvas.style.boxSizing = "border-box";
 
