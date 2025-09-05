@@ -2,7 +2,7 @@
 let devices = [];
 let lastSelected = null;
 
-const TOLERANCIA_DIMENSIONAL = 1.0; // mm de diferencia permitida en alto y ancho
+const TOLERANCIA_DIMENSIONAL = 0.9; // mm de diferencia permitida en alto y ancho
 // refiriendose a curvatura como el radio de curvatura de las esquinas, no como el "Edge"
 const TOLERANCIA_CURVATURA = 0.5;   // mm de diferencia permitida en curvatura
 const ESCALA_VISUAL = 2; // Escala fija para visualizacion
@@ -28,21 +28,39 @@ function comparePhones(selected) {
   canvas.innerHTML = "";
   list.innerHTML = "";
 
-  if (!selected.height_mm || !selected.width_mm || selected.curvatura_mm === undefined) {
+  if (
+    !selected.height_mm ||
+    !selected.width_mm ||
+    selected.curvatura_mm === undefined
+  ) {
     canvas.innerHTML = "<p>Faltan datos para comparar este modelo.</p>";
     return;
   }
 
-  const similares = devices.filter((d) =>
-    d.height_mm &&
-    d.width_mm &&
-    d.curvatura_mm !== undefined &&
-    Math.abs(d.height_mm - selected.height_mm) <= TOLERANCIA_DIMENSIONAL &&
-    Math.abs(d.width_mm - selected.width_mm) <= TOLERANCIA_DIMENSIONAL &&
-    Math.abs(d.curvatura_mm - selected.curvatura_mm) <= TOLERANCIA_CURVATURA
-  );
+  const similares = devices
+    .filter(
+      (d) =>
+        d.height_mm &&
+        d.width_mm &&
+        d.curvatura_mm !== undefined &&
+        Math.abs(d.height_mm - selected.height_mm) <= TOLERANCIA_DIMENSIONAL &&
+        Math.abs(d.width_mm - selected.width_mm) <= TOLERANCIA_DIMENSIONAL &&
+        Math.abs(d.curvatura_mm - selected.curvatura_mm) <= TOLERANCIA_CURVATURA
+    )
+    .map((d) => ({
+      ...d,
+      distancia: Math.sqrt(
+        Math.pow(d.height_mm - selected.height_mm, 2) +
+          Math.pow(d.width_mm - selected.width_mm, 2) +
+          Math.pow(d.curvatura_mm - selected.curvatura_mm, 2)
+      ),
+    }))
+    .sort((a, b) => a.distancia - b.distancia);
 
-  const ordenados = [selected, ...similares.filter((d) => d.model !== selected.model)];
+  const ordenados = [
+    selected,
+    ...similares.filter((d) => d.model !== selected.model),
+  ];
 
   // Configurar canvas
   canvas.style.display = "flex";
@@ -56,13 +74,15 @@ function comparePhones(selected) {
   canvas.style.position = "relative";
   canvas.style.boxSizing = "border-box";
 
-  // Renderizar telefonos
-  ordenados.forEach((d, i) => {
+  // Renderizar teléfonos
+  ordenados.forEach((d) => {
     const phone = document.createElement("div");
     phone.className = "phone";
     phone.style.height = `${d.height_mm * ESCALA_VISUAL}px`;
     phone.style.width = `${d.width_mm * ESCALA_VISUAL}px`;
-    phone.style.border = `2px solid ${d.model === selected.model ? "red" : "blue"}`;
+    phone.style.border = `2px solid ${
+      d.model === selected.model ? "red" : "blue"
+    }`;
     phone.style.borderRadius = `${d.curvatura_mm}px`;
     phone.style.flexShrink = "0";
     phone.style.display = "flex";
@@ -71,9 +91,8 @@ function comparePhones(selected) {
     phone.style.justifyContent = "flex-end";
     phone.style.position = "relative";
     phone.style.boxSizing = "border-box";
-    phone.style.margin = "30px 20px 35px 20px";
+    phone.style.margin = "30px 20px 35px 20px`;
 
-    // Nombre del modelo
     const label = document.createElement("div");
     label.className = "phone-label";
     label.textContent = `${d.brand} ${d.model}`;
@@ -84,10 +103,9 @@ function comparePhones(selected) {
     phone.appendChild(label);
     canvas.appendChild(phone);
 
-    // Lista lateral
     const li = document.createElement("div");
     li.className = "list-item";
-    li.textContent = `${d.brand} ${d.model}`;
+    li.textContent = `${d.brand} ${d.model} (${d.distancia?.toFixed(2) ?? 0})`;
     list.appendChild(li);
   });
 }
