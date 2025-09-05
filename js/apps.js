@@ -5,7 +5,7 @@ let lastSelected = null;
 const TOLERANCIA_DIMENSIONAL = 1; // mm de diferencia permitida en alto y ancho
 // refiriendose a curvatura como el radio de curvatura de las esquinas, no como el "Edge"
 const TOLERANCIA_CURVATURA = 1;   // mm de diferencia permitida en curvatura
-const ESCALA_VISUAL = 2;        // Escala fija para visualización
+const ESCALA_VISUAL = 2; // Escala fija para visualizacion
 
 // Cargar datos desde JSON
 async function loadPhones() {
@@ -50,9 +50,10 @@ function comparePhones(selected) {
   canvas.style.justifyContent = "flex-start";
   canvas.style.gap = "100px";
   canvas.style.height = "500px";
-  canvas.style.padding = "30px 20px 30px 20px";
+  canvas.style.padding = "10px 20px 40px 20px";
   canvas.style.overflowX = "auto";
   canvas.style.scrollSnapType = "x mandatory";
+  phone.style.scrollSnapAlign = "start";
   canvas.scrollLeft = 0;
   canvas.style.position = "relative";
   canvas.style.boxSizing = "border-box";
@@ -63,14 +64,13 @@ function comparePhones(selected) {
     phone.className = "phone";
     phone.style.height = `${d.height_mm * ESCALA_VISUAL}px`;
     phone.style.width = `${d.width_mm * ESCALA_VISUAL}px`;
-    phone.style.border = `1px solid ${d.model === selected.model ? "red" : "blue"}`;
+    phone.style.border = `2px solid ${d.model === selected.model ? "red" : "blue"}`;
     phone.style.borderRadius = `${d.curvatura_mm}px`;
     phone.style.flexShrink = "0";
     phone.style.display = "flex";
     phone.style.flexDirection = "column";
     phone.style.alignItems = "center";
     phone.style.justifyContent = "flex-end";
-    phone.style.scrollSnapAlign = "start";
     phone.style.position = "relative";
     phone.style.boxSizing = "border-box";
     phone.style.marginBottom = "20px";
