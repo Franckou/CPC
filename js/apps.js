@@ -63,7 +63,8 @@ function comparePhones(selected) {
     phone.className = "phone";
     phone.style.height = `${d.height_mm * ESCALA_VISUAL}px`;
     phone.style.width = `${d.width_mm * ESCALA_VISUAL}px`;
-    phone.style.border = `${d.curvatura_mm * ESCALA_VISUAL}px solid ${d.model === selected.model ? "red" : "blue"}`;
+    phone.style.border = `1px solid ${d.model === selected.model ? "red" : "blue"}`;
+    phone.style.borderRadius = `${d.curvatura_mm}px`;
     phone.style.flexShrink = "0";
     phone.style.display = "flex";
     phone.style.flexDirection = "column";
