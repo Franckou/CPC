@@ -32,7 +32,6 @@ function comparePhones(selected) {
   canvas.innerHTML = "";
   list.innerHTML = "";
 
-  // Validar que el seleccionado tenga los 3 campos
   if (
     typeof selected.height_mm !== "number" ||
     typeof selected.width_mm !== "number" ||
@@ -42,7 +41,6 @@ function comparePhones(selected) {
     return;
   }
 
-  // Filtrar por tolerancias y ordenar por distancia (similitud)
   const similares = devices
     .filter(
       (d) =>
@@ -65,13 +63,11 @@ function comparePhones(selected) {
       return distA - distB;
     });
 
-  // Poner primero el seleccionado y luego los similares (sin duplicarlo)
   const ordenados = [
     selected,
     ...similares.filter((d) => d.brand !== selected.brand || d.model !== selected.model),
   ];
 
-  // Estilos del canvas
   canvas.style.display = "flex";
   canvas.style.alignItems = "flex-end";
   canvas.style.justifyContent = "flex-start";
@@ -83,7 +79,6 @@ function comparePhones(selected) {
   canvas.style.position = "relative";
   canvas.style.boxSizing = "border-box";
 
-  // Scroll horizontal con la rueda del mouse
   canvas.addEventListener(
     "wheel",
     (e) => {
@@ -95,7 +90,6 @@ function comparePhones(selected) {
     { passive: false }
   );
 
-  // Renderizar teléfonos
   ordenados.forEach((d) => {
     const phone = document.createElement("div");
     phone.className = "phone";
@@ -129,7 +123,7 @@ function comparePhones(selected) {
   });
 }
 
-// Buscador interactivo
+// Buscador interactivo con botón de borrar
 const buscador = document.getElementById("buscador");
 const sugerencias = document.getElementById("sugerencias");
 
@@ -145,7 +139,6 @@ function setupSearch() {
     const query = e.target.value.toLowerCase().trim();
     sugerencias.innerHTML = "";
 
-    // Mostrar u ocultar el botón de borrar
     clearBtn.style.display = query ? "block" : "none";
 
     const resultados = query
@@ -167,24 +160,21 @@ function setupSearch() {
     });
   });
 
-  // Acción del botón de borrar
   clearBtn.addEventListener("click", () => {
     buscador.value = "";
     sugerencias.innerHTML = "";
     clearBtn.style.display = "none";
     buscador.focus();
   });
-}
-
 
   buscador.addEventListener("blur", () => {
     setTimeout(() => (sugerencias.innerHTML = ""), 200);
   });
+}
 
 // Botón de modo oscuro
 const toggleBtn = document.getElementById("toggle-dark");
 
-// Cargar preferencia guardada
 if (localStorage.getItem("dark-mode") === "true") {
   document.body.classList.add("dark-mode");
   toggleBtn.textContent = "Modo claro";
