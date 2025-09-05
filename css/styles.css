@@ -299,7 +299,7 @@ body.dark-mode * {
     font-size: 14px;
   }
 
-  /* Evitá aplicar a todos los <section> */
+  /* Panel de comparación en columna */
   #comparacion {
     display: flex;
     flex-direction: column;
@@ -311,6 +311,7 @@ body.dark-mode * {
     gap: 20px;
   }
 
+  /* Listado lateral adaptado */
   aside.listado {
     width: 100%;
     max-width: 85vw;
@@ -320,6 +321,7 @@ body.dark-mode * {
     box-sizing: border-box;
   }
 
+  /* Canvas adaptado */
   .canvas {
     width: 100%;
     max-width: 85vw;
@@ -333,15 +335,22 @@ body.dark-mode * {
     scroll-snap-type: x mandatory;
   }
 
+  /* Scrollbar horizontal en móviles */
   .canvas::-webkit-scrollbar {
     height: 6px;
   }
-
   .canvas::-webkit-scrollbar-thumb {
-    background: #97a2af;
+    background: rgba(150, 150, 150, 0.5);
     border-radius: 3px;
   }
+  body.dark-mode .canvas::-webkit-scrollbar-thumb {
+    background: rgba(200, 200, 200, 0.3);
+  }
+  body.dark-mode .canvas::-webkit-scrollbar-thumb:hover {
+    background: rgba(200, 200, 200, 0.6);
+  }
 
+  /* Teléfonos en carrusel */
   .phone {
     flex-shrink: 0;
     max-width: 100%;
