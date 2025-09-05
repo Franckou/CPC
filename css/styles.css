@@ -269,11 +269,11 @@ body.dark-mode * {
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
-    gap: 20px;
+    gap: 8px;
   }
   #toggle-dark {
     order: -1;
-    margin-bottom: 8px;
+    margin-bottom: 15px;
   }
   html,
   body {
