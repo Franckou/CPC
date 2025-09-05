@@ -24,49 +24,54 @@ function comparePhones(selected) {
 
   const canvas = document.getElementById("canvas");
   const list = document.getElementById("list");
+  if (!canvas || !list) {
+    console.error("Faltan elementos #canvas o #list en el DOM");
+    return;
+  }
+
   canvas.innerHTML = "";
   list.innerHTML = "";
 
+  // Validar que el seleccionado tenga los 3 campos
   if (
-    !selected.height_mm ||
-    !selected.width_mm ||
-    selected.curvatura_mm === undefined
+    typeof selected.height_mm !== "number" ||
+    typeof selected.width_mm !== "number" ||
+    typeof selected.curvatura_mm !== "number"
   ) {
     canvas.innerHTML = "<p>Faltan datos para comparar este modelo.</p>";
     return;
   }
 
-  // Filtrar y ordenar por distancia
+  // Filtrar por tolerancias y ordenar por distancia (similitud)
   const similares = devices
     .filter(
       (d) =>
-        d.height_mm &&
-        d.width_mm &&
-        d.curvatura_mm !== undefined &&
+        typeof d.height_mm === "number" &&
+        typeof d.width_mm === "number" &&
+        typeof d.curvatura_mm === "number" &&
         Math.abs(d.height_mm - selected.height_mm) <= TOLERANCIA_DIMENSIONAL &&
         Math.abs(d.width_mm - selected.width_mm) <= TOLERANCIA_DIMENSIONAL &&
         Math.abs(d.curvatura_mm - selected.curvatura_mm) <= TOLERANCIA_CURVATURA
     )
     .sort((a, b) => {
-      const distA = Math.sqrt(
+      const distA =
         Math.pow(a.height_mm - selected.height_mm, 2) +
         Math.pow(a.width_mm - selected.width_mm, 2) +
-        Math.pow(a.curvatura_mm - selected.curvatura_mm, 2)
-      );
-      const distB = Math.sqrt(
+        Math.pow(a.curvatura_mm - selected.curvatura_mm, 2);
+      const distB =
         Math.pow(b.height_mm - selected.height_mm, 2) +
         Math.pow(b.width_mm - selected.width_mm, 2) +
-        Math.pow(b.curvatura_mm - selected.curvatura_mm, 2)
-      );
+        Math.pow(b.curvatura_mm - selected.curvatura_mm, 2);
       return distA - distB;
     });
 
+  // Poner primero el seleccionado y luego los similares (sin duplicarlo)
   const ordenados = [
     selected,
-    ...similares.filter((d) => d.model !== selected.model),
+    ...similares.filter((d) => d.brand !== selected.brand || d.model !== selected.model),
   ];
 
-  // Configurar canvas
+  // Estilos del canvas (por si no están en CSS)
   canvas.style.display = "flex";
   canvas.style.alignItems = "flex-end";
   canvas.style.justifyContent = "flex-start";
@@ -84,9 +89,7 @@ function comparePhones(selected) {
     phone.className = "phone";
     phone.style.height = `${d.height_mm * ESCALA_VISUAL}px`;
     phone.style.width = `${d.width_mm * ESCALA_VISUAL}px`;
-    phone.style.border = `2px solid ${
-      d.model === selected.model ? "red" : "blue"
-    }`;
+    phone.style.border = `2px solid ${d.model === selected.model ? "red" : "blue"}`;
     phone.style.borderRadius = `${d.curvatura_mm}px`;
     phone.style.flexShrink = "0";
     phone.style.display = "flex";
@@ -95,7 +98,8 @@ function comparePhones(selected) {
     phone.style.justifyContent = "flex-end";
     phone.style.position = "relative";
     phone.style.boxSizing = "border-box";
-    phone.style.margin = "30px 20px 35px 20px`;
+    // Ojo: comillas correctas
+    phone.style.margin = "30px 20px 35px 20px";
 
     const label = document.createElement("div");
     label.className = "phone-label";
@@ -119,15 +123,18 @@ const buscador = document.getElementById("buscador");
 const sugerencias = document.getElementById("sugerencias");
 
 function setupSearch() {
+  if (!buscador || !sugerencias) {
+    console.error("Faltan elementos #buscador o #sugerencias en el DOM");
+    return;
+  }
+
   buscador.addEventListener("input", (e) => {
-    const query = e.target.value.toLowerCase();
+    const query = e.target.value.toLowerCase().trim();
     sugerencias.innerHTML = "";
 
-    const resultados = !query
-      ? devices
-      : devices.filter((d) =>
-          `${d.brand} ${d.model}`.toLowerCase().includes(query)
-        );
+    const resultados = query
+      ? devices.filter((d) => `${d.brand} ${d.model}`.toLowerCase().includes(query))
+      : devices;
 
     resultados.forEach((d) => {
       const div = document.createElement("div");
