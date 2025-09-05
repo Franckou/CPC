@@ -273,7 +273,7 @@ body.dark-mode * {
   }
   #toggle-dark {
     order: -1;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
   }
   html,
   body {
