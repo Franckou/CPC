@@ -171,12 +171,14 @@ const toggleBtn = document.getElementById("toggle-dark");
 if (localStorage.getItem("dark-mode") === "true") {
   document.body.classList.add("dark-mode");
   toggleBtn.textContent = "Modo claro";
+  toggleBtn.setAttribute("aria-label", "Alternar modo claro");
 }
 
 toggleBtn.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
   const isDark = document.body.classList.contains("dark-mode");
   toggleBtn.textContent = isDark ? "Modo claro" : "Modo oscuro";
+  toggleBtn.setAttribute("aria-label", isDark ? "Alternar modo claro" : "Alternar modo oscuro");
   localStorage.setItem("dark-mode", isDark);
 });
 
