@@ -164,6 +164,22 @@ function setupSearch() {
   });
 }
 
+// Botón de modo oscuro
+const toggleBtn = document.getElementById("toggle-dark");
+
+// Cargar preferencia guardada
+if (localStorage.getItem("dark-mode") === "true") {
+  document.body.classList.add("dark-mode");
+  toggleBtn.textContent = "Modo claro";
+}
+
+toggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+  const isDark = document.body.classList.contains("dark-mode");
+  toggleBtn.textContent = isDark ? "Modo claro" : "Modo oscuro";
+  localStorage.setItem("dark-mode", isDark);
+});
+
 // Inicializar
 loadPhones().then(() => {
   setupSearch();
