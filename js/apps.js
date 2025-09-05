@@ -2,7 +2,7 @@
 let devices = [];
 let lastSelected = null;
 
-const TOLERANCIA_DIMENSIONAL = 1; // mm de diferencia permitida en alto y ancho
+const TOLERANCIA_DIMENSIONAL = 2; // mm de diferencia permitida en alto y ancho
 // refiriendose a curvatura como el radio de curvatura de las esquinas, no como el "Edge"
 const TOLERANCIA_CURVATURA = 1;   // mm de diferencia permitida en curvatura
 const ESCALA_VISUAL = 2; // Escala fija para visualizacion
@@ -49,7 +49,7 @@ function comparePhones(selected) {
   canvas.style.alignItems = "flex-end";
   canvas.style.justifyContent = "flex-start";
   canvas.style.gap = "100px";
-  canvas.style.maxHeight = "565px";
+  canvas.style.maxHeight = "500px";
   canvas.style.padding = "10px 20px 40px 20px";
   canvas.style.overflowX = "auto";
   canvas.style.scrollSnapType = "x mandatory";
