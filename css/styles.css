@@ -323,8 +323,9 @@ body.dark-mode * {
 
   /* Listado lateral adaptado */
   aside.listado {
+    min-height: 40vw;
     width: 100%;
-    max-width: 40vw;
+    max-width: 85vw;
     height: auto;
     margin: 0 auto;
     padding: 16px;
@@ -333,8 +334,8 @@ body.dark-mode * {
 
   /* Canvas adaptado */
   .canvas {
-    width: 100%;
     min-height: 60vw;
+    width: 100%;
     max-width: 85vw;
     height: 500px;
     display: flex;
