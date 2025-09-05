@@ -50,7 +50,7 @@ function comparePhones(selected) {
   canvas.style.justifyContent = "flex-start";
   canvas.style.gap = "100px";
   canvas.style.maxHeight = "500px";
-  canvas.style.padding = "10px 20px 40px 20px";
+  canvas.style.padding = "10px 20px 30px 20px";
   canvas.style.overflowX = "auto";
   canvas.style.scrollSnapType = "x mandatory";
   canvas.style.position = "relative";
@@ -71,7 +71,7 @@ function comparePhones(selected) {
     phone.style.justifyContent = "flex-end";
     phone.style.position = "relative";
     phone.style.boxSizing = "border-box";
-    phone.style.marginBottom = "20px";
+    phone.style.margin = "30px 20px 35px 0px";
 
     // Nombre del modelo
     const label = document.createElement("div");
