@@ -71,7 +71,7 @@ function comparePhones(selected) {
     ...similares.filter((d) => d.brand !== selected.brand || d.model !== selected.model),
   ];
 
-  // Estilos del canvas (por si no están en CSS)
+  // Estilos del canvas
   canvas.style.display = "flex";
   canvas.style.alignItems = "flex-end";
   canvas.style.justifyContent = "flex-start";
@@ -82,6 +82,18 @@ function comparePhones(selected) {
   canvas.style.scrollSnapType = "x mandatory";
   canvas.style.position = "relative";
   canvas.style.boxSizing = "border-box";
+
+  // Scroll horizontal con la rueda del mouse
+  canvas.addEventListener(
+    "wheel",
+    (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        canvas.scrollLeft += e.deltaY;
+      }
+    },
+    { passive: false }
+  );
 
   // Renderizar teléfonos
   ordenados.forEach((d) => {
@@ -98,7 +110,6 @@ function comparePhones(selected) {
     phone.style.justifyContent = "flex-end";
     phone.style.position = "relative";
     phone.style.boxSizing = "border-box";
-    // Ojo: comillas correctas
     phone.style.margin = "30px 20px 35px 20px";
 
     const label = document.createElement("div");
