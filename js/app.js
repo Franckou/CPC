@@ -1,153 +1,195 @@
+// Configuración
 let devices = [];
-const SCALE = 2; // Escala para los teléfonos
-const GAP = 100; // Separación horizontal entre teléfonos
-const BASE_PHONE_HEIGHT = 400; // Altura deseada para el seleccionado
-const TOLERANCIA_MM = 1; // Ajustar tolerancia para mayor congruencia
-const TOLERANCIA_CURVA = 0; // Tolerancia específica para la curvatura de bordes
+let lastSelected = null;
 
-async function loadData() {
+const TOLERANCIA_DIMENSIONAL = 1.0; // mm de diferencia permitida en alto y ancho
+const TOLERANCIA_CURVATURA = 0.5;   // mm de diferencia permitida en curvatura
+const ESCALA_VISUAL = 2;            // Escala fija para visualización
+
+// Cargar datos desde JSON
+async function loadPhones() {
   try {
     const res = await fetch("data/phones.json");
-    if (!res.ok) {
-      throw new Error(`Error al cargar datos: ${res.status} ${res.statusText}`);
-    }
+    if (!res.ok) throw new Error("No se pudo cargar el archivo");
     devices = await res.json();
-    console.log("Datos cargados correctamente:", devices);
-  } catch (error) {
-    console.error("Error al cargar el archivo phones.json:", error);
+    console.log("Datos cargados:", devices);
+  } catch (err) {
+    console.error("Error al cargar los datos:", err);
   }
 }
 
-// función principal para renderizar la comparación
-function renderComparison(selected) {
+// Comparar teléfonos similares
+function comparePhones(selected) {
+  lastSelected = selected;
+
   const canvas = document.getElementById("canvas");
   const list = document.getElementById("list");
+  if (!canvas || !list) {
+    console.error("Faltan elementos #canvas o #list en el DOM");
+    return;
+  }
+
   canvas.innerHTML = "";
   list.innerHTML = "";
 
-  console.log("Teléfono seleccionado:", selected);
-
-  // Validar que el teléfono seleccionado tenga datos completos
   if (
-    !selected.height_mm ||
-    !selected.width_mm ||
-    !selected.aspect_ratio ||
-    !selected.screen_inches
+    typeof selected.height_mm !== "number" ||
+    typeof selected.width_mm !== "number" ||
+    typeof selected.curvatura_mm !== "number"
   ) {
-    canvas.innerHTML =
-      "<p>Error: El teléfono seleccionado no tiene datos completos.</p>";
+    canvas.innerHTML = "<p>Faltan datos para comparar este modelo.</p>";
     return;
   }
 
-  // Filtrar modelos similares con tolerancia ajustada
-  const similars = devices.filter(
-    (d) =>
-      d.height_mm &&
-      d.width_mm &&
-      Math.abs(d.height_mm - selected.height_mm) <= TOLERANCIA_MM &&
-      Math.abs(d.width_mm - selected.width_mm) <= TOLERANCIA_MM &&
-      d.aspect_ratio === selected.aspect_ratio &&
-      Math.abs(d.screen_inches - selected.screen_inches) <= 0.1 &&
-      Math.abs(d.curvatura_mm - selected.curvatura_mm) <= TOLERANCIA_CURVA
-  );
+  const similares = devices
+    .filter(
+      (d) =>
+        typeof d.height_mm === "number" &&
+        typeof d.width_mm === "number" &&
+        typeof d.curvatura_mm === "number" &&
+        Math.abs(d.height_mm - selected.height_mm) <= TOLERANCIA_DIMENSIONAL &&
+        Math.abs(d.width_mm - selected.width_mm) <= TOLERANCIA_DIMENSIONAL &&
+        Math.abs(d.curvatura_mm - selected.curvatura_mm) <= TOLERANCIA_CURVATURA
+    )
+    .sort((a, b) => {
+      const distA =
+        Math.pow(a.height_mm - selected.height_mm, 2) +
+        Math.pow(a.width_mm - selected.width_mm, 2) +
+        Math.pow(a.curvatura_mm - selected.curvatura_mm, 2);
+      const distB =
+        Math.pow(b.height_mm - selected.height_mm, 2) +
+        Math.pow(b.width_mm - selected.width_mm, 2) +
+        Math.pow(b.curvatura_mm - selected.curvatura_mm, 2);
+      return distA - distB;
+    });
 
-  console.log("Teléfonos similares encontrados:", similars);
-
-  if (similars.length === 0) {
-    canvas.innerHTML = "<p>No se encontraron teléfonos similares.</p>";
-    return;
-  }
-
-  // Reorganizar para que el teléfono seleccionado aparezca primero
-  const orderedSimilars = [
+  const ordenados = [
     selected,
-    ...similars.filter((d) => d.model !== selected.model),
+    ...similares.filter((d) => d.brand !== selected.brand || d.model !== selected.model),
   ];
 
-  // Calcular escala para los teléfonos
-  const scaleBase = BASE_PHONE_HEIGHT / selected.height_mm;
-
-  // Ajustar el canvas para permitir desplazamiento horizontal
+  canvas.style.display = "flex";
+  canvas.style.alignItems = "flex-end";
+  canvas.style.justifyContent = "flex-start";
+  canvas.style.gap = "25px";
+  canvas.style.maxHeight = "500px";
+  canvas.style.padding = "10px 20px 30px 20px";
   canvas.style.overflowX = "auto";
-  canvas.style.whiteSpace = "nowrap";
-  canvas.style.paddingTop = "40px"; // Margen superior para separar los teléfonos del borde
+  canvas.style.scrollSnapType = "x mandatory";
+  canvas.style.position = "relative";
+  canvas.style.boxSizing = "border-box";
 
-  // Renderizar teléfonos similares en el canvas
-  orderedSimilars.forEach((d, i) => {
+  canvas.addEventListener(
+    "wheel",
+    (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        canvas.scrollLeft += e.deltaY;
+      }
+    },
+    { passive: false }
+  );
+
+  ordenados.forEach((d) => {
     const phone = document.createElement("div");
     phone.className = "phone";
-    phone.style.height = `${d.height_mm * scaleBase}px`;
-    phone.style.width = `${d.width_mm * scaleBase}px`;
-    phone.style.border = `${d.curvatura_mm}px solid ${
-      d.model === selected.model ? "red" : "blue"
-    }`; // Resaltar seleccionado
+    phone.style.height = `${d.height_mm * ESCALA_VISUAL}px`;
+    phone.style.width = `${d.width_mm * ESCALA_VISUAL}px`;
+    phone.style.border = `2px solid ${d.model === selected.model ? "red" : "blue"}`;
+    phone.style.borderRadius = `${d.curvatura_mm}px`;
+    phone.style.flexShrink = "0";
+    phone.style.display = "flex";
+    phone.style.flexDirection = "column";
+    phone.style.alignItems = "center";
+    phone.style.justifyContent = "flex-end";
     phone.style.position = "relative";
-    phone.style.display = "inline-block"; // Para alinearlos horizontalmente
-    phone.style.marginLeft = `${i === 0 ? 40 : GAP}px`; // Espaciado inicial y entre teléfonos
-    phone.style.marginBottom = "20px"; // Margen inferior
+    phone.style.boxSizing = "border-box";
+    phone.style.margin = "30px 20px 35px 20px";
 
-    // Nombre del teléfono con tamaño ajustado
     const label = document.createElement("div");
     label.className = "phone-label";
-    label.style.fontSize = "14px"; // Ajustar tamaño de fuente
     label.textContent = `${d.brand} ${d.model}`;
+    label.style.fontSize = "14px";
+    label.style.marginTop = "4px";
+    label.style.textAlign = "center";
+
     phone.appendChild(label);
-
     canvas.appendChild(phone);
-  });
 
-  // Renderizar lista lateral de modelos
-  orderedSimilars.forEach((d) => {
     const li = document.createElement("div");
     li.className = "list-item";
     li.textContent = `${d.brand} ${d.model}`;
-    li.onmouseenter = () => {
-      const phones = canvas.querySelectorAll(".phone");
-      phones.forEach((phone) => {
-        if (phone.textContent.includes(`${d.brand} ${d.model}`)) {
-          phone.style.opacity = 1;
-        }
-      });
-    };
-    li.onmouseleave = () => {
-      const phones = canvas.querySelectorAll(".phone");
-      phones.forEach((phone) => {
-        phone.style.opacity = 0.6;
-      });
-    };
     list.appendChild(li);
   });
 }
 
-// Buscador
+// Buscador interactivo con botón de borrar
 const buscador = document.getElementById("buscador");
 const sugerencias = document.getElementById("sugerencias");
 
-buscador.addEventListener("input", (e) => {
-  const query = e.target.value.toLowerCase();
-  sugerencias.innerHTML = "";
-  if (!query) return;
+function setupSearch() {
+  if (!buscador || !sugerencias) {
+    console.error("Faltan elementos #buscador o #sugerencias en el DOM");
+    return;
+  }
 
-  const results = devices.filter((d) =>
-    `${d.brand} ${d.model}`.toLowerCase().includes(query)
-  );
+  const clearBtn = document.getElementById("clear-search");
 
-  results.forEach((d) => {
-    const div = document.createElement("div");
-    div.textContent = `${d.brand} ${d.model}`;
-    div.onclick = () => {
-      console.log("Objeto seleccionado:", d); // Depuración
-      buscador.value = `${d.brand} ${d.model}`;
-      sugerencias.innerHTML = "";
-      renderComparison(d);
-    };
-    sugerencias.appendChild(div);
+  buscador.addEventListener("input", (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    sugerencias.innerHTML = "";
+
+    clearBtn.style.display = query ? "block" : "none";
+
+    const resultados = query
+      ? devices.filter((d) =>
+          `${d.brand} ${d.model}`.toLowerCase().includes(query)
+        )
+      : devices;
+
+    resultados.forEach((d) => {
+      const div = document.createElement("div");
+      div.textContent = `${d.brand} ${d.model}`;
+      div.onclick = () => {
+        buscador.value = div.textContent;
+        sugerencias.innerHTML = "";
+        clearBtn.style.display = "block";
+        comparePhones(d);
+      };
+      sugerencias.appendChild(div);
+    });
   });
+
+  clearBtn.addEventListener("click", () => {
+    buscador.value = "";
+    sugerencias.innerHTML = "";
+    clearBtn.style.display = "none";
+    buscador.focus();
+  });
+
+  buscador.addEventListener("blur", () => {
+    setTimeout(() => (sugerencias.innerHTML = ""), 200);
+  });
+}
+
+// Botón de modo oscuro
+const toggleBtn = document.getElementById("toggle-dark");
+
+if (localStorage.getItem("dark-mode") === "true") {
+  document.body.classList.add("dark-mode");
+  toggleBtn.textContent = "Modo claro";
+  toggleBtn.setAttribute("aria-label", "Alternar modo claro");
+}
+
+toggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+  const isDark = document.body.classList.contains("dark-mode");
+  toggleBtn.textContent = isDark ? "Modo claro" : "Modo oscuro";
+  toggleBtn.setAttribute("aria-label", isDark ? "Alternar modo claro" : "Alternar modo oscuro");
+  localStorage.setItem("dark-mode", isDark);
 });
 
-// Ocultar sugerencias al perder foco
-buscador.addEventListener("blur", () => {
-  setTimeout(() => (sugerencias.innerHTML = ""), 200);
+// Inicializar
+loadPhones().then(() => {
+  setupSearch();
 });
-
-loadData();
