@@ -33,12 +33,16 @@ main#main-container {
   height: 100%;
   padding: 20px 40px;
 }
-
-header h2 {
-  font-size: 25px;
+.logo {
+  white-space: nowrap; /* evita el salto de línea */
+}
+.logo-text {
+  font-family: 'Montserrat', sans-serif;
   font-weight: 700;
-  color: #000000;
-  text-align: center;
+  background: linear-gradient(90deg, #007BFF 0%, #00C6FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text; /* para navegadores que lo soporten */
 }
 
 /* Buscador y sugerencias */
