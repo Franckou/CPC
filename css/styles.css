@@ -33,10 +33,16 @@ main#main-container {
   height: 100%;
   padding: 20px 40px;
 }
+header {
+  align-items: center;
+  flex-direction: column;
+}
 .logo {
-  white-space: nowrap; /* evita el salto de línea */
+  height: 40px;
+  width: auto;
 }
 .logo-text {
+  white-space: nowrap; /* evita el salto de línea */
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   background: linear-gradient(90deg, #007BFF 0%, #00C6FF 100%);
@@ -317,9 +323,11 @@ body.dark-mode * {
     box-sizing: border-box;
   }
 
-  header h2 {
-    font-size: clamp(20px, 4vw, 30px);
-    text-align: center;
+  .logo {
+    height: 32px;
+  }
+  .logo-text {
+    font-size: 1.5rem;
   }
 
   section.inputs {
