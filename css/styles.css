@@ -204,6 +204,7 @@ aside.listado {
 
 /* Botón de modo oscuro */
 #toggle-dark {
+  width: 120px;
   background: linear-gradient(135deg, #444, #222);
   color: #fff;
   border: none;
