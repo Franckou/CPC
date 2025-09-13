@@ -245,11 +245,19 @@ aside.listado {
   transform: translateY(-4px);
 }
 
-.phone-label,
+.phone-label {
+  max-width: 100%;
+  text-align: center;
+  line-height: 1.2;
+}
+
 .phone-dimensions {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  line-height: 1.2;
 }
 
 /* Botón de modo oscuro */
@@ -294,7 +302,6 @@ body.dark-mode aside.listado,
 body.dark-mode #sugerencias {
   background-color: #1e1e1e;
   border-color: #333;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
 }
 
 body.dark-mode .phone {
