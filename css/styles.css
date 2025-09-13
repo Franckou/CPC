@@ -177,7 +177,7 @@ aside.listado {
   padding: 12px;
   margin-left: 1vw;
   overflow-y: auto;
-  box-shadow: 0 0 0 3px rgba(168, 168, 168, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* CORREGIDO - sombra real */
   flex-shrink: 0; /* No encogerse */
   box-sizing: border-box;
 }
@@ -217,7 +217,7 @@ aside.listado {
   overflow-x: auto;
   overflow-y: hidden; /* Solo scroll horizontal */
   scrollbar-color: #97a2af transparent;
-  box-shadow: 0 0 0 3px rgba(168, 168, 168, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* CORREGIDO - sombra real */
   box-sizing: border-box;
   min-width: 0; /* Permitir encogimiento */
 }
@@ -298,10 +298,16 @@ body.dark-mode .phone-label {
 }
 
 body.dark-mode .canvas,
-body.dark-mode aside.listado,
+body.dark-mode aside.listado {
+  background-color: #1e1e1e;
+  border-color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* CORREGIDO - sombra real en modo oscuro */
+}
+
 body.dark-mode #sugerencias {
   background-color: #1e1e1e;
   border-color: #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* CORREGIDO - sombra real en modo oscuro */
 }
 
 body.dark-mode .phone {
