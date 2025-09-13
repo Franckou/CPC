@@ -15,9 +15,12 @@ aside {
   font-weight: normal;
   font-style: normal;
 }
+
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden; /* Prevenir scroll horizontal global */
 }
+
 body {
   font-family: "Garet", sans-serif;
   margin: 0;
@@ -25,6 +28,8 @@ body {
   color: #333333;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden; /* Prevenir scroll horizontal */
+  min-height: 100vh; /* Asegurar altura mínima */
 }
 
 main#main-container {
@@ -32,57 +37,71 @@ main#main-container {
   flex-direction: column;
   height: 100%;
   padding: 20px 10px;
+  max-width: 100vw; /* Prevenir desbordamiento */
+  box-sizing: border-box;
 }
+
 header {
   display: flex;
   align-items: center;
   flex-direction: column;
+  max-width: 100%; /* Prevenir desbordamiento */
 }
+
 .logo {
   height: 120px;
   width: auto;
+  max-width: 100%; /* Responsive */
 }
+
 .logo-text {
-  white-space: nowrap; /* evita el salto de línea */
-  font-family: 'Montserrat', sans-serif;
+  white-space: nowrap;
+  font-family: "Montserrat", sans-serif;
   font-weight: 700;
-  background: linear-gradient(90deg, #007BFF 0%, #00C6FF 100%);
+  background: linear-gradient(90deg, #007bff 0%, #00c6ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text; /* para navegadores que lo soporten */
+  background-clip: text;
   margin: 0 0 10px 0;
+  max-width: 100%; /* Prevenir desbordamiento */
+  overflow: hidden; /* Si es muy largo */
 }
 
 /* Buscador y sugerencias */
 section.inputs {
   position: relative;
-  width: 20vw;
+  width: min(20vw, 400px); /* Limitar ancho máximo */
   margin: 0 auto;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: calc(100vw - 40px); /* Considerar padding del main */
 }
+
 /* Contenedor para input + botón */
 .search-wrapper {
   position: relative;
   width: 100%;
 }
+
 #buscador {
   width: 100%;
-  padding: 12px 16px;
+  padding: 12px 40px 12px 16px; /* Espacio para botón X */
   font-size: 15px;
   border: 1px solid #dddddd;
   border-radius: 9999px;
   outline: none;
   transition: all 0.2s ease-in-out;
   font-family: "Garet", sans-serif;
+  box-sizing: border-box;
 }
 
 #buscador:focus {
   border-color: #dddddd;
   box-shadow: 0 0 0 3px rgba(168, 168, 168, 0.2);
 }
+
 /* Botón de borrar dentro del input */
 #clear-search {
   position: absolute;
@@ -94,10 +113,12 @@ section.inputs {
   font-size: 16px;
   color: #888;
   cursor: pointer;
-  display: none; /* oculto por defecto */
+  display: none;
   padding: 0;
   line-height: 1;
+  z-index: 2; /* Asegurar que esté encima */
 }
+
 #clear-search:hover {
   color: #333;
 }
@@ -105,9 +126,11 @@ section.inputs {
 body.dark-mode #clear-search {
   color: #bbb;
 }
+
 body.dark-mode #clear-search:hover {
   color: #fff;
 }
+
 /* Lista de sugerencias transparente */
 #sugerencias {
   position: absolute;
@@ -118,14 +141,16 @@ body.dark-mode #clear-search:hover {
   border-radius: 10px;
   max-height: 400px;
   overflow-y: auto;
-  z-index: 10;
+  z-index: 100; /* Mayor z-index para estar encima de todo */
   font-family: "Garet", sans-serif;
+  box-sizing: border-box;
 }
 
 #sugerencias div {
   padding: 8px 16px;
   font-size: 14px;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 /* Panel de comparación */
@@ -133,12 +158,17 @@ body.dark-mode #clear-search:hover {
   display: flex;
   margin: 30px 15px;
   flex: 1;
+  max-width: calc(100vw - 30px); /* Prevenir desbordamiento */
+  box-sizing: border-box;
+  overflow: hidden; /* Prevenir desbordamiento de hijos */
 }
 
 /* Listado lateral */
 aside.listado {
   font-family: "Garet", sans-serif;
   width: 300px;
+  min-width: 280px; /* Ancho mínimo */
+  max-width: 300px; /* Ancho máximo fijo */
   height: 565px;
   max-height: 500px;
   background: #ffffff;
@@ -148,6 +178,8 @@ aside.listado {
   margin-left: 1vw;
   overflow-y: auto;
   box-shadow: 0 0 0 3px rgba(168, 168, 168, 0.2);
+  flex-shrink: 0; /* No encogerse */
+  box-sizing: border-box;
 }
 
 .list-item {
@@ -157,6 +189,8 @@ aside.listado {
   font-weight: 400;
   transition: background 0.2s;
   color: #333333;
+  word-wrap: break-word; /* Romper palabras largas */
+  overflow-wrap: break-word;
 }
 
 .list-item:hover {
@@ -170,19 +204,22 @@ aside.listado {
 
 /* Canvas de teléfonos */
 .canvas {
-  padding-right: 20px;
+  padding: 20px;
   max-height: 565px;
   width: auto;
   margin-left: 15px;
-  margin-right: 15px;
+  margin-right: 25px;
   flex: 1;
   background: #ffffff;
   border: 1px solid #dddddd;
   border-radius: 10px;
   display: flex;
   overflow-x: auto;
-  scrollbar-color: #97a2af;
+  overflow-y: hidden; /* Solo scroll horizontal */
+  scrollbar-color: #97a2af transparent;
   box-shadow: 0 0 0 3px rgba(168, 168, 168, 0.2);
+  box-sizing: border-box;
+  min-width: 0; /* Permitir encogimiento */
 }
 
 .phone {
@@ -190,6 +227,7 @@ aside.listado {
   padding: 20px;
   background: #ffffff;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   font-weight: 600;
@@ -197,10 +235,21 @@ aside.listado {
   text-align: center;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
   transition: transform 0.2s;
+  flex-shrink: 0; /* Mantener tamaño */
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .phone:hover {
   transform: translateY(-4px);
+}
+
+.phone-label,
+.phone-dimensions {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Botón de modo oscuro */
@@ -215,11 +264,14 @@ aside.listado {
   cursor: pointer;
   margin-top: 10px;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
+
 #toggle-dark:hover {
   background: linear-gradient(135deg, #666, #333);
   transform: scale(1.05);
 }
+
 body.dark-mode #toggle-dark {
   background: linear-gradient(135deg, #eee, #ccc);
   color: #111;
@@ -230,11 +282,13 @@ body.dark-mode {
   background-color: #121212;
   color: #e0e0e0;
 }
+
 body.dark-mode header h2,
 body.dark-mode .list-item,
 body.dark-mode .phone-label {
   color: #e0e0e0;
 }
+
 body.dark-mode .canvas,
 body.dark-mode aside.listado,
 body.dark-mode #sugerencias {
@@ -242,34 +296,39 @@ body.dark-mode #sugerencias {
   border-color: #333;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
 }
+
 body.dark-mode .phone {
   background-color: #2a2a2a;
   box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
 }
+
 body.dark-mode .list-item:hover {
   background-color: #333;
 }
+
 body.dark-mode .list-item.active {
   background-color: #263238;
 }
+
 body.dark-mode #buscador {
   background-color: #2c2c2c;
   color: #e0e0e0;
   border-color: #444;
 }
+
 body.dark-mode #sugerencias div:hover {
   background-color: #333;
 }
-/* Scrollbars modernos y estéticos */
 
+/* Scrollbars modernos y estéticos */
 /* WebKit (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
-  width: 8px;   /* scroll vertical */
-  height: 8px;  /* scroll horizontal */
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent; /* pista invisible */
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -303,14 +362,6 @@ body.dark-mode * {
 
 /* Responsive */
 @media (max-width: 768px) {
-  header {
-    display: flex;
-    align-items: center;
-  }
-  #toggle-dark {
-    order: -1;
-    margin-bottom:20px;
-  }
   html,
   body {
     width: 100vw;
@@ -320,57 +371,44 @@ body.dark-mode * {
   }
 
   main#main-container {
-    padding: 20px;
+    padding: 20px 10px; /* Reducir padding lateral */
     width: 100%;
+    max-width: 100vw;
     box-sizing: border-box;
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+  }
+
+  #toggle-dark {
+    order: -1;
+    margin-bottom: 20px;
+    width: 110px; /* Ligeramente más pequeño */
   }
 
   .logo {
     height: 96px;
+    max-width: 90vw;
   }
+
   .logo-text {
     font-size: 1.5rem;
+    max-width: 90vw;
   }
 
   section.inputs {
     margin-top: 20px;
-    width: 80vw;
-    margin: 0 auto 20px auto;
+    width: min(80vw, 350px);
+    margin: 20px auto;
   }
 
   #buscador {
-    padding: 14px 18px;
+    padding: 14px 40px 14px 18px;
     font-size: 16px;
   }
-  .search-wrapper {
-  position: relative;
-  width: 100%;
-}
 
-  #clear-search {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    font-size: 16px;
-    color: #888;
-    cursor: pointer;
-    display: none; /* oculto por defecto */
-    padding: 0;
-  }
-
-  #clear-search:hover {
-    color: #333;
-  }
-
-  body.dark-mode #clear-search {
-    color: #bbb;
-  }
-  body.dark-mode #clear-search:hover {
-    color: #fff;
-  }
   #sugerencias {
     max-height: 300px;
     font-size: 14px;
@@ -386,15 +424,16 @@ body.dark-mode * {
     box-sizing: border-box;
     margin: 20px 0;
     gap: 20px;
+    padding: 0 10px;
   }
 
   /* Listado lateral adaptado */
   aside.listado {
     min-height: 40vw;
     width: 100%;
-    max-width: 85vw;
+    max-width: calc(100vw - 40px);
     height: auto;
-    margin: 0 auto;
+    margin: 0;
     padding: 16px;
     box-sizing: border-box;
   }
@@ -403,14 +442,14 @@ body.dark-mode * {
   .canvas {
     min-height: 60vw;
     width: 100%;
-    max-width: 85vw;
+    max-width: calc(100vw - 40px);
     height: 500px;
     display: flex;
     overflow-x: auto;
     overflow-y: hidden;
     box-sizing: border-box;
-    padding: 0;
-    margin: 0 auto;
+    padding: 10px;
+    margin: 0;
     scroll-snap-type: x mandatory;
   }
 
@@ -418,13 +457,16 @@ body.dark-mode * {
   .canvas::-webkit-scrollbar {
     height: 6px;
   }
+
   .canvas::-webkit-scrollbar-thumb {
     background: rgba(150, 150, 150, 0.5);
     border-radius: 3px;
   }
+
   body.dark-mode .canvas::-webkit-scrollbar-thumb {
     background: rgba(200, 200, 200, 0.3);
   }
+
   body.dark-mode .canvas::-webkit-scrollbar-thumb:hover {
     background: rgba(200, 200, 200, 0.6);
   }
@@ -432,9 +474,13 @@ body.dark-mode * {
   /* Teléfonos en carrusel */
   .phone {
     flex-shrink: 0;
-    max-width: 100%;
+    max-width: none;
     box-sizing: border-box;
     scroll-snap-align: start;
-    margin-right: 20px;
+    margin-right: 15px;
+  }
+
+  .phone:last-child {
+    margin-right: 0;
   }
 }
