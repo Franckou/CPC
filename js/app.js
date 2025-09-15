@@ -9,6 +9,24 @@ const ESCALA_VISUAL = 2.5; // Escala fija para visualización
 // Variable para activar/desactivar debug
 const DEBUG_MODE = true; // Cambiar a false cuando no necesites el debug
 
+window.onload = function () {
+  const aviso = document.createElement("div");
+  aviso.textContent = "REALIZANDO CAMBIOS: Estamos realizando cambios y corrigiendo errores. La página estará inhabilitada hasta el 16/09.";
+  aviso.style.position = "fixed";
+  aviso.style.top = "0";
+  aviso.style.left = "0";
+  aviso.style.width = "100%";
+  aviso.style.padding = "15px";
+  aviso.style.backgroundColor = "#ff4444";
+  aviso.style.color = "#fff";
+  aviso.style.fontFamily = "Arial, sans-serif";
+  aviso.style.fontSize = "16px";
+  aviso.style.textAlign = "center";
+  aviso.style.zIndex = "9999";
+
+  document.body.appendChild(aviso);
+};
+
 // Cargar datos desde JSON
 async function loadPhones() {
   try {
@@ -343,4 +361,5 @@ if (toggleBtn) {
 loadPhones().then(() => {
   setupSearch();
 });
+
 
