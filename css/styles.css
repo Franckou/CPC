@@ -18,7 +18,7 @@ aside {
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden; /* Prevenir scroll horizontal global */
+  overflow-x: hidden;
 }
 
 body {
@@ -28,8 +28,8 @@ body {
   color: #333333;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden; /* Prevenir scroll horizontal */
-  min-height: 100vh; /* Asegurar altura mínima */
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
 main#main-container {
@@ -37,7 +37,7 @@ main#main-container {
   flex-direction: column;
   height: 100%;
   padding: 20px 10px;
-  max-width: 100vw; /* Prevenir desbordamiento */
+  max-width: 100vw;
   box-sizing: border-box;
 }
 
@@ -45,13 +45,13 @@ header {
   display: flex;
   align-items: center;
   flex-direction: column;
-  max-width: 100%; /* Prevenir desbordamiento */
+  max-width: 100%;
 }
 
 .logo {
   height: 120px;
   width: auto;
-  max-width: 100%; /* Responsive */
+  max-width: 100%;
 }
 
 .logo-text {
@@ -63,20 +63,20 @@ header {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0 0 10px 0;
-  max-width: 100%; /* Prevenir desbordamiento */
-  overflow: hidden; /* Si es muy largo */
+  max-width: 100%;
+  overflow: hidden;
 }
 
 /* Buscador y sugerencias */
 section.inputs {
   position: relative;
-  width: min(20vw, 400px); /* Limitar ancho máximo */
+  width: min(20vw, 400px);
   margin: 0 auto;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: calc(100vw - 40px); /* Considerar padding del main */
+  max-width: calc(100vw - 40px);
 }
 
 /* Contenedor para input + botón */
@@ -87,7 +87,7 @@ section.inputs {
 
 #buscador {
   width: 100%;
-  padding: 12px 40px 12px 16px; /* Espacio para botón X */
+  padding: 12px 40px 12px 16px;
   font-size: 15px;
   border: 1px solid #dddddd;
   border-radius: 9999px;
@@ -116,7 +116,7 @@ section.inputs {
   display: none;
   padding: 0;
   line-height: 1;
-  z-index: 2; /* Asegurar que esté encima */
+  z-index: 2;
 }
 
 #clear-search:hover {
@@ -131,8 +131,9 @@ body.dark-mode #clear-search:hover {
   color: #fff;
 }
 
-/* Lista de sugerencias transparente */
-#sugerencias {
+/* Lista de sugerencias - CORREGIDO para coincidir con HTML */
+#sugerencias,
+.sugerencias {
   position: absolute;
   top: 100%;
   width: 100%;
@@ -141,44 +142,65 @@ body.dark-mode #clear-search:hover {
   border-radius: 10px;
   max-height: 400px;
   overflow-y: auto;
-  z-index: 100; /* Mayor z-index para estar encima de todo */
+  z-index: 100;
   font-family: "Garet", sans-serif;
   box-sizing: border-box;
+  display: none; /* Inicialmente oculto */
 }
 
-#sugerencias div {
-  padding: 8px 16px;
+#sugerencias.show,
+.sugerencias.show {
+  display: block;
+}
+
+#sugerencias div,
+.sugerencias div {
+  padding: 12px 16px;
   font-size: 14px;
   cursor: pointer;
   box-sizing: border-box;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-/* Panel de comparación */
+#sugerencias div:last-child,
+.sugerencias div:last-child {
+  border-bottom: none;
+}
+
+#sugerencias div:hover,
+.sugerencias div:hover {
+  background-color: #f8f9fa;
+}
+
+/* Panel de comparación - CORREGIDO ID */
 #comparacion {
   display: flex;
   margin: 30px 15px;
   flex: 1;
-  max-width: calc(100vw - 30px); /* Prevenir desbordamiento */
+  max-width: calc(100vw - 30px);
   box-sizing: border-box;
-  overflow: hidden; /* Prevenir desbordamiento de hijos */
+  overflow: hidden;
 }
 
-/* Listado lateral */
-aside.listado {
+/* Listado lateral - CORREGIDO para usar ambos ID y clase */
+#list,
+aside.listado,
+.listado {
   font-family: "Garet", sans-serif;
   width: 300px;
-  min-width: 280px; /* Ancho mínimo */
-  max-width: 300px; /* Ancho máximo fijo */
+  min-width: 280px;
+  max-width: 300px;
   height: 565px;
-  max-height: 500px;
+  max-height: 565px;
   background: #ffffff;
   border: 1px solid #dddddd;
   border-radius: 10px;
   padding: 12px;
   margin-left: 1vw;
   overflow-y: auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* CORREGIDO - sombra real */
-  flex-shrink: 0; /* No encogerse */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra real */
+  flex-shrink: 0;
   box-sizing: border-box;
 }
 
@@ -187,24 +209,27 @@ aside.listado {
   cursor: pointer;
   border-radius: 6px;
   font-weight: 400;
-  transition: background 0.2s;
+  transition: background-color 0.2s ease;
   color: #333333;
-  word-wrap: break-word; /* Romper palabras largas */
+  word-wrap: break-word;
   overflow-wrap: break-word;
+  margin-bottom: 2px;
 }
 
 .list-item:hover {
-  background: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 .list-item.active {
-  background: #e0f7fa;
+  background-color: #e3f2fd;
+  color: #1565c0;
   font-weight: 600;
 }
 
-/* Canvas de teléfonos */
+/* Canvas de teléfonos - CORREGIDO para usar ambos ID y clase */
+#canvas,
 .canvas {
-  padding: 20px;
+  padding: 20px 20px 4% 20px;
   max-height: 565px;
   width: auto;
   margin-left: 15px;
@@ -215,11 +240,13 @@ aside.listado {
   border-radius: 10px;
   display: flex;
   overflow-x: auto;
-  overflow-y: hidden; /* Solo scroll horizontal */
+  overflow-y: hidden;
   scrollbar-color: #97a2af transparent;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* CORREGIDO - sombra real */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra real */
   box-sizing: border-box;
-  min-width: 0; /* Permitir encogimiento */
+  min-width: 0;
+  gap: 15px; /* Espaciado entre elementos */
+  align-items: end;
 }
 
 .phone {
@@ -233,31 +260,36 @@ aside.listado {
   font-weight: 600;
   color: #333333;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-  transition: transform 0.2s;
-  flex-shrink: 0; /* Mantener tamaño */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
   box-sizing: border-box;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  min-width: 120px;
+  border: 1px solid #e0e0e0;
 }
 
 .phone:hover {
   transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .phone-label {
   max-width: 100%;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
 .phone-dimensions {
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.3;
+  font-size: 0.9em;
+  color: #666;
 }
 
 /* Botón de modo oscuro */
@@ -297,22 +329,45 @@ body.dark-mode .phone-label {
   color: #e0e0e0;
 }
 
-body.dark-mode .canvas,
-body.dark-mode aside.listado {
-  background-color: #1e1e1e;
-  border-color: #333;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* CORREGIDO - sombra real en modo oscuro */
+body.dark-mode .phone-dimensions {
+  color: #b0b0b0;
 }
 
-body.dark-mode #sugerencias {
+body.dark-mode #canvas,
+body.dark-mode .canvas,
+body.dark-mode #list,
+body.dark-mode aside.listado,
+body.dark-mode .listado {
   background-color: #1e1e1e;
   border-color: #333;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* CORREGIDO - sombra real en modo oscuro */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode #sugerencias,
+body.dark-mode .sugerencias {
+  background-color: #1e1e1e;
+  border-color: #333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode #sugerencias div,
+body.dark-mode .sugerencias div {
+  border-bottom-color: #333;
+}
+
+body.dark-mode #sugerencias div:hover,
+body.dark-mode .sugerencias div:hover {
+  background-color: #333;
 }
 
 body.dark-mode .phone {
   background-color: #2a2a2a;
-  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
+  border-color: #444;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .phone:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
 body.dark-mode .list-item:hover {
@@ -320,7 +375,8 @@ body.dark-mode .list-item:hover {
 }
 
 body.dark-mode .list-item.active {
-  background-color: #263238;
+  background-color: #1a237e;
+  color: #90caf9;
 }
 
 body.dark-mode #buscador {
@@ -329,12 +385,7 @@ body.dark-mode #buscador {
   border-color: #444;
 }
 
-body.dark-mode #sugerencias div:hover {
-  background-color: #333;
-}
-
-/* Scrollbars modernos y estéticos */
-/* WebKit (Chrome, Edge, Safari) */
+/* Scrollbars modernos */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -354,7 +405,6 @@ body.dark-mode #sugerencias div:hover {
   background: rgba(150, 150, 150, 0.8);
 }
 
-/* Scrollbars en modo oscuro */
 body.dark-mode ::-webkit-scrollbar-thumb {
   background: rgba(200, 200, 200, 0.3);
 }
@@ -363,7 +413,7 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
   background: rgba(200, 200, 200, 0.6);
 }
 
-/* Firefox */
+/* Firefox scrollbars */
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(150, 150, 150, 0.5) transparent;
@@ -384,7 +434,7 @@ body.dark-mode * {
   }
 
   main#main-container {
-    padding: 20px 10px; /* Reducir padding lateral */
+    padding: 20px 10px;
     width: 100%;
     max-width: 100vw;
     box-sizing: border-box;
@@ -398,7 +448,7 @@ body.dark-mode * {
   #toggle-dark {
     order: -1;
     margin-bottom: 20px;
-    width: 110px; /* Ligeramente más pequeño */
+    width: 110px;
   }
 
   .logo {
@@ -422,7 +472,8 @@ body.dark-mode * {
     font-size: 16px;
   }
 
-  #sugerencias {
+  #sugerencias,
+  .sugerencias {
     max-height: 300px;
     font-size: 14px;
   }
@@ -441,7 +492,9 @@ body.dark-mode * {
   }
 
   /* Listado lateral adaptado */
-  aside.listado {
+  #list,
+  aside.listado,
+  .listado {
     min-height: 40vw;
     width: 100%;
     max-width: calc(100vw - 40px);
@@ -452,6 +505,7 @@ body.dark-mode * {
   }
 
   /* Canvas adaptado */
+  #canvas,
   .canvas {
     min-height: 60vw;
     width: 100%;
@@ -467,19 +521,23 @@ body.dark-mode * {
   }
 
   /* Scrollbar horizontal en móviles */
+  #canvas::-webkit-scrollbar,
   .canvas::-webkit-scrollbar {
     height: 6px;
   }
 
+  #canvas::-webkit-scrollbar-thumb,
   .canvas::-webkit-scrollbar-thumb {
     background: rgba(150, 150, 150, 0.5);
     border-radius: 3px;
   }
 
+  body.dark-mode #canvas::-webkit-scrollbar-thumb,
   body.dark-mode .canvas::-webkit-scrollbar-thumb {
     background: rgba(200, 200, 200, 0.3);
   }
 
+  body.dark-mode #canvas::-webkit-scrollbar-thumb:hover,
   body.dark-mode .canvas::-webkit-scrollbar-thumb:hover {
     background: rgba(200, 200, 200, 0.6);
   }
