@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/admin.js"></script>
+    <link rel="stylesheet" href="/css/admin.css" />
+    <title>Panel de Administración - Supabase</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📱 Panel de Administración - Supabase</h1>
+        <div id="connectionStatus" class="connection-status checking">
+          🔄 Conectando...
+        </div>
+      </div>
+
+      <div class="main-content">
+        <!-- Configuración de Supabase -->
+        <div class="config-section" id="configSection">
+          <h3>⚙️ Configuración de Supabase</h3>
+          <p style="color: #856404; margin-bottom: 15px">
+            Ingresa tus credenciales de Supabase para conectar:
+          </p>
+          <div class="config-inputs">
+            <div class="form-group">
+              <label>URL del Proyecto</label>
+              <input
+                type="text"
+                id="supabaseUrl"
+                placeholder="https://tuproyecto.supabase.co"
+              />
+            </div>
+            <div class="form-group">
+              <label>Anon Key</label>
+              <input
+                type="password"
+                id="supabaseKey"
+                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              />
+            </div>
+            <div>
+              <button class="btn btn-primary" onclick="connectSupabase()">
+                🔌 CONECTAR A SUPABASE
+              </button>
+              <button class="btn btn-secondary" onclick="toggleConfig()">
+                ❌ CANCELAR
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="successMessage" class="success-message"></div>
+        <div id="errorMessage" class="error-message"></div>
+
+        <div class="tabs">
+          <button class="tab active" onclick="showTab('manage')">
+            Gestionar Modelos
+          </button>
+          <button class="tab" onclick="showTab('config')">Configuración</button>
+        </div>
+
+        <!-- Tab: Gestionar Modelos -->
+        <div id="manage" class="tab-content active">
+          <div class="stats">
+            <div class="stat-card">
+              <div class="stat-number" id="totalModels">0</div>
+              <div class="stat-label">Modelos Total</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="totalBrands">0</div>
+              <div class="stat-label">Marcas</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-number" id="totalSizes">0</div>
+              <div class="stat-label">Tamaños</div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2 style="margin-bottom: 25px; color: #2c3e50">
+              ➕ Agregar Nuevo Modelo
+            </h2>
+            <form id="modelForm" onsubmit="handleSubmit(event)">
+              <div class="form-group">
+                <label for="brand">Marca *</label>
+                <input
+                  type="text"
+                  id="brand"
+                  name="brand"
+                  required
+                  placeholder="Ej: Apple, Samsung, Xiaomi..."
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="model">Modelo *</label>
+                <input
+                  type="text"
+                  id="model"
+                  name="model"
+                  required
+                  placeholder="Ej: iPhone 15 Pro, Galaxy S24..."
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Dimensiones (mm) *</label>
+                <div class="size-inputs">
+                  <input
+                    type="number"
+                    id="width"
+                    name="width"
+                    placeholder="Ancho"
+                    required
+                    step="0.1"
+                  />
+                  <input
+                    type="number"
+                    id="height"
+                    name="height"
+                    placeholder="Alto"
+                    required
+                    step="0.1"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="curvatura">Curvatura (mm) *</label>
+                <input
+                  type="number"
+                  id="curvatura"
+                  name="curvatura"
+                  placeholder="Ej: 8.0"
+                  step="0.1"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label>Configuración del Notch *</label>
+                <div class="form-group">
+                  <label for="notchType">Tipo de Notch</label>
+                  <select id="notchType" name="notchType" required>
+                    <option value="">Seleccionar tipo...</option>
+                    <option value="infinity-v">Infinity V</option>
+                    <option value="waterdrop">Waterdrop</option>
+                    <option value="punch-hole">Punch Hole</option>
+                    <option value="dynamic-island">Dynamic Island</option>
+                    <option value="notch">Notch Clásico</option>
+                    <option value="none">Sin Notch</option>
+                  </select>
+                </div>
+                <div class="size-inputs">
+                  <input
+                    type="number"
+                    id="notchWidth"
+                    name="notchWidth"
+                    placeholder="Ancho Notch *"
+                    step="0.1"
+                    required
+                  />
+                  <input
+                    type="number"
+                    id="notchHeight"
+                    name="notchHeight"
+                    placeholder="Alto Notch *"
+                    step="0.1"
+                    required
+                  />
+                </div>
+                <div class="size-inputs">
+                  <input
+                    type="number"
+                    id="notchOffsetTop"
+                    name="notchOffsetTop"
+                    placeholder="Offset Top"
+                    step="0.1"
+                  />
+                  <input
+                    type="number"
+                    id="notchOffsetLeft"
+                    name="notchOffsetLeft"
+                    placeholder="Offset Left (opcional)"
+                    step="0.1"
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="number"
+                    id="notchRadius"
+                    name="notchRadius"
+                    placeholder="Radio del Notch (opcional)"
+                    step="0.1"
+                  />
+                </div>
+              </div>
+
+              <input type="hidden" id="editingId" value="" />
+              <button type="submit" class="btn btn-primary" id="submitBtn">
+                AGREGAR MODELO
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="clearForm()"
+              >
+                LIMPIAR
+              </button>
+            </form>
+          </div>
+
+          <div style="margin-bottom: 20px">
+            <input
+              type="text"
+              class="search-box"
+              id="searchBox"
+              placeholder="🔍 Buscar modelos por marca o modelo..."
+              oninput="updateDisplay()"
+            />
+          </div>
+
+          <div id="loadingIndicator" class="loading" style="display: none">
+            Cargando modelos
+          </div>
+          <div class="models-grid" id="modelsGrid"></div>
+        </div>
+
+        <!-- Tab: Configuración -->
+        <div id="config" class="tab-content">
+          <div class="form-section">
+            <h2 style="margin-bottom: 25px; color: #2c3e50">
+              ⚙️ Configuración de Conexión
+            </h2>
+            <div class="form-group">
+              <label>URL del Proyecto</label>
+              <input
+                type="text"
+                id="configUrl"
+                placeholder="https://tuproyecto.supabase.co"
+              />
+            </div>
+            <div class="form-group">
+              <label>Anon Key</label>
+              <input
+                type="password"
+                id="configKey"
+                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              />
+            </div>
+            <button class="btn btn-primary" onclick="saveConfig()">
+              💾 GUARDAR CONFIGURACIÓN
+            </button>
+            <button class="btn btn-secondary" onclick="testConnection()">
+              🔌 PROBAR CONEXIÓN
+            </button>
+          </div>
+
+          <div class="form-section">
+            <h2 style="margin-bottom: 25px; color: #2c3e50">
+              📋 Instrucciones
+            </h2>
+            <ol style="margin-left: 20px; color: #666; line-height: 1.8">
+              <li>Ve a tu proyecto en <strong>Supabase</strong></li>
+              <li>
+                Clic en <strong>Project Settings</strong> (⚙️) →
+                <strong>API</strong>
+              </li>
+              <li>
+                Copia la <strong>Project URL</strong> y
+                <strong>anon public key</strong>
+              </li>
+              <li>Pégalas arriba y guarda la configuración</li>
+              <li>¡Listo! Ya podés gestionar tus datos desde aquí</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
