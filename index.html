@@ -4,29 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Compara Pantallas</title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/app.js" defer></script>
     <script>
       if (localStorage.getItem("dark-mode") === "true") {
         document.documentElement.classList.add("dark-mode");
       }
     </script>
-    <script src="js/app.js" defer></script>
   </head>
   <body>
     <main id="main-container">
-      <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
-      <button id="toggle-dark" aria-label="Alternar modo oscuro">Modo oscuro</button>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap"
+        rel="stylesheet"
+      />
+      <button id="toggle-dark" aria-label="Alternar modo oscuro">
+        Modo oscuro
+      </button>
       <header>
-        <img class="logo" src="favicon.ico" alt="Logo">
+        <img class="logo" src="favicon.ico" alt="Logo" />
         <h1 class="logo-text">DisplaySync</h1>
       </header>
       <!-- Buscador -->
       <section class="inputs" aria-label="Buscador de modelos">
         <input
           id="buscador"
-          placeholder="Buscar un modelo..." autocomplete="off" aria-label="Buscar modelo de celular"/>
-          <button id="clear-search" aria-label="Borrar busqueda">✖</button>
+          placeholder="Buscar un modelo..."
+          autocomplete="off"
+          aria-label="Buscar modelo de celular"
+        />
+        <button id="clear-search" aria-label="Borrar busqueda">✖</button>
         <div id="sugerencias" class="sugerencias" role="listbox"></div>
       </section>
 
