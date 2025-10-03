@@ -1,27 +1,168 @@
-// Configuración
-let devices = [];
-let lastSelected = null;
+// ========================================
+// CONFIGURACIÓN DE SUPABASE
+// ========================================
 
-const TOLERANCIA_DIMENSIONAL = 1.0; // mm de diferencia permitida en alto y ancho
-const TOLERANCIA_CURVATURA = 0.5; // mm de diferencia permitida en curvatura
-const ESCALA_VISUAL = 2.5; // Escala fija para visualización
+const SUPABASE_URL = localStorage.getItem("supabaseUrl");
+const SUPABASE_ANON_KEY = localStorage.getItem("supabaseKey");
 
-// Variable para activar/desactivar debug
-const DEBUG_MODE = true; // Cambiar a false cuando no necesites el debug
+let supabase = null;
 
-// Cargar datos desde JSON
-async function loadPhones() {
+function initSupabase() {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    console.error(
+      "❌ Faltan credenciales de Supabase. Configúralas en admin.html"
+    );
+    return false;
+  }
+
   try {
-    const res = await fetch("data/phones.json");
-    if (!res.ok) throw new Error("No se pudo cargar el archivo");
-    devices = await res.json();
-    console.log("Datos cargados:", devices.length, "dispositivos");
-  } catch (err) {
-    console.error("Error al cargar los datos:", err);
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log("✅ Cliente Supabase inicializado");
+    return true;
+  } catch (error) {
+    console.error("❌ Error al inicializar Supabase:", error);
+    return false;
   }
 }
 
-// Función de debug para diagnosticar problemas de filtrado
+// ========================================
+// CONFIGURACIÓN VISUAL Y TOLERANCIAS
+// ========================================
+
+let devices = [];
+let lastSelected = null;
+
+const TOLERANCIA_DIMENSIONAL = 1.0;
+const TOLERANCIA_CURVATURA = 0.5;
+const ESCALA_VISUAL = 2.5;
+const DEBUG_MODE = true;
+
+// ========================================
+// FUNCIÓN HELPER: NORMALIZAR DATOS
+// ========================================
+
+function normalizePhoneData(rawPhone) {
+  if (!rawPhone) return null;
+
+  const height =
+    rawPhone.height_mm !== undefined && rawPhone.height_mm !== null
+      ? Number(rawPhone.height_mm)
+      : NaN;
+  const width =
+    rawPhone.width_mm !== undefined && rawPhone.width_mm !== null
+      ? Number(rawPhone.width_mm)
+      : NaN;
+  const curv =
+    rawPhone.curvatura_mm !== undefined && rawPhone.curvatura_mm !== null
+      ? Number(rawPhone.curvatura_mm)
+      : NaN;
+
+  return {
+    ...rawPhone,
+    brand: rawPhone.brand ? String(rawPhone.brand).trim() : "",
+    model: rawPhone.model ? String(rawPhone.model).trim() : "",
+    height_mm: isNaN(height) ? null : height,
+    width_mm: isNaN(width) ? null : width,
+    curvatura_mm: isNaN(curv) ? null : curv,
+    notch: {
+      type: rawPhone.notch_type || "none",
+      width:
+        rawPhone.notch_width_mm !== undefined &&
+        rawPhone.notch_width_mm !== null
+          ? Number(rawPhone.notch_width_mm)
+          : 0,
+      height:
+        rawPhone.notch_height_mm !== undefined &&
+        rawPhone.notch_height_mm !== null
+          ? Number(rawPhone.notch_height_mm)
+          : 0,
+      offsetTop:
+        rawPhone.notch_offset_top !== undefined &&
+        rawPhone.notch_offset_top !== null
+          ? Number(rawPhone.notch_offset_top)
+          : 0,
+      offsetLeft:
+        rawPhone.notch_offset_left !== undefined &&
+        rawPhone.notch_offset_left !== null
+          ? Number(rawPhone.notch_offset_left)
+          : null,
+      radius:
+        rawPhone.notch_radius !== undefined && rawPhone.notch_radius !== null
+          ? Number(rawPhone.notch_radius)
+          : null,
+    },
+    brandModelLower: `${rawPhone.brand || ""} ${
+      rawPhone.model || ""
+    }`.toLowerCase(),
+  };
+}
+
+// ========================================
+// CARGA DE DATOS - VERSIÓN SUPABASE
+// ========================================
+
+async function loadPhones() {
+  try {
+    console.log("🔄 Cargando teléfonos desde Supabase...");
+
+    if (!supabase) {
+      console.error("❌ Supabase no está inicializado");
+      devices = [];
+      showNoDataMessage();
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("phones")
+      .select("*")
+      .order("brand", { ascending: true });
+
+    if (error) {
+      console.error("❌ Error al cargar desde Supabase:", error);
+      devices = [];
+      showNoDataMessage();
+      return;
+    }
+
+    devices = (data || []).map(normalizePhoneData);
+
+    console.log(`✅ ${devices.length} dispositivos cargados desde Supabase`);
+
+    const incompletos = devices.filter(
+      (x) =>
+        x.height_mm === null || x.width_mm === null || x.curvatura_mm === null
+    );
+
+    if (incompletos.length > 0) {
+      console.warn(
+        `⚠️ ${incompletos.length} dispositivos con datos incompletos`
+      );
+      if (DEBUG_MODE) console.log("Ej: ", incompletos.slice(0, 5));
+    }
+  } catch (err) {
+    console.error("❌ Error inesperado al cargar datos:", err);
+    devices = [];
+    showNoDataMessage();
+  }
+}
+
+// ✅ NUEVA FUNCIÓN: Mostrar mensaje cuando no hay datos
+function showNoDataMessage() {
+  const canvas = document.getElementById("canvas");
+  if (canvas) {
+    canvas.innerHTML = `
+      <div style="text-align: center; padding: 40px; color: #666;">
+        <p style="font-size: 1.2em; margin-bottom: 10px;">⚠️ No se pudieron cargar los datos</p>
+        <p>Verifica la conexión a Supabase en admin.html</p>
+      </div>
+    `;
+  }
+}
+
+// ========================================
+// FUNCIONES DE COMPARACIÓN
+// ========================================
+
 function debugFilter(selected, devices) {
   if (!DEBUG_MODE) return;
 
@@ -35,13 +176,9 @@ function debugFilter(selected, devices) {
     curvatura: TOLERANCIA_CURVATURA,
   });
 
-  let compatiblesCount = 0;
-
   devices.forEach((d) => {
-    // Saltar el teléfono seleccionado
     if (d.brand === selected.brand && d.model === selected.model) return;
 
-    // Validar que tenga datos numéricos válidos
     const tieneAlturaValida =
       typeof d.height_mm === "number" && !isNaN(d.height_mm);
     const tieneAnchoValido =
@@ -55,48 +192,13 @@ function debugFilter(selected, devices) {
         ancho: d.width_mm,
         curvatura: d.curvatura_mm,
       });
-      return;
     }
-
-    const altoDiff = Math.abs(d.height_mm - selected.height_mm);
-    const anchoDiff = Math.abs(d.width_mm - selected.width_mm);
-    const curvaturaDiff = Math.abs(d.curvatura_mm - selected.curvatura_mm);
-
-    const pasaFiltroAlto = altoDiff <= TOLERANCIA_DIMENSIONAL;
-    const pasaFiltroAncho = anchoDiff <= TOLERANCIA_DIMENSIONAL;
-    const pasaFiltroCurvatura = curvaturaDiff <= TOLERANCIA_CURVATURA;
-    const pasaFiltroCompleto =
-      pasaFiltroAlto && pasaFiltroAncho && pasaFiltroCurvatura;
-
-    //--- muestra en la consola la los telefenos compatibles y los que no ---//
-
-    // if (pasaFiltroCompleto) {
-    //   compatiblesCount++;
-    //   console.log(`✅ ${d.brand} ${d.model} - COMPATIBLE`);
-    // } else {
-    //   console.log(`❌ ${d.brand} ${d.model} - NO compatible:`);
-    // }
-
-    // console.log(
-    //   `   Dimensiones: ${d.height_mm}mm x ${d.width_mm}mm x ${d.curvatura_mm}mm`
-    // );
-    // console.log(
-    //   `   Diferencias: Alto=${altoDiff.toFixed(2)}mm ${
-    //     pasaFiltroAlto ? "✅" : "❌"
-    //   }, Ancho=${anchoDiff.toFixed(2)}mm ${
-    //     pasaFiltroAncho ? "✅" : "❌"
-    //   }, Curvatura=${curvaturaDiff.toFixed(2)}mm ${
-    //     pasaFiltroCurvatura ? "✅" : "❌"
-    //   }`
-    // );
   });
 }
 
-// Comparar teléfonos similares - CORREGIDO para usar los IDs del HTML
 function comparePhones(selected) {
   lastSelected = selected;
 
-  // CORREGIDO: Usar los IDs correctos del HTML
   const canvas = document.getElementById("canvas");
   const list = document.getElementById("list");
 
@@ -108,7 +210,6 @@ function comparePhones(selected) {
   canvas.innerHTML = "";
   list.innerHTML = "";
 
-  // Validar que el teléfono seleccionado tenga datos válidos
   if (
     typeof selected.height_mm !== "number" ||
     typeof selected.width_mm !== "number" ||
@@ -122,28 +223,22 @@ function comparePhones(selected) {
     return;
   }
 
-  // Ejecutar debug si está activado
   debugFilter(selected, devices);
 
-  // Filtro mejorado con validación estricta
   const similares = devices
     .filter((d) => {
-      // Saltar el teléfono seleccionado
       if (d.brand === selected.brand && d.model === selected.model)
         return false;
 
-      // Validación estricta de tipos y valores
       if (typeof d.height_mm !== "number" || isNaN(d.height_mm)) return false;
       if (typeof d.width_mm !== "number" || isNaN(d.width_mm)) return false;
       if (typeof d.curvatura_mm !== "number" || isNaN(d.curvatura_mm))
         return false;
 
-      // Cálculo de diferencias
       const altoDiff = Math.abs(d.height_mm - selected.height_mm);
       const anchoDiff = Math.abs(d.width_mm - selected.width_mm);
       const curvaturaDiff = Math.abs(d.curvatura_mm - selected.curvatura_mm);
 
-      // Aplicar tolerancias
       return (
         altoDiff <= TOLERANCIA_DIMENSIONAL &&
         anchoDiff <= TOLERANCIA_DIMENSIONAL &&
@@ -151,7 +246,6 @@ function comparePhones(selected) {
       );
     })
     .sort((a, b) => {
-      // Ordenar por similitud (distancia euclidiana)
       const distA =
         Math.pow(a.height_mm - selected.height_mm, 2) +
         Math.pow(a.width_mm - selected.width_mm, 2) +
@@ -163,10 +257,8 @@ function comparePhones(selected) {
       return distA - distB;
     });
 
-  // Crear lista ordenada con el seleccionado primero
   const ordenados = [selected, ...similares];
 
-  // Scroll horizontal con rueda del mouse
   canvas.addEventListener(
     "wheel",
     (e) => {
@@ -178,20 +270,79 @@ function comparePhones(selected) {
     { passive: false }
   );
 
-  // Renderizar teléfonos
   ordenados.forEach((d, index) => {
     const phone = document.createElement("div");
     phone.className = "phone";
 
-    // Estilos específicos para JS
     phone.style.height = `${d.height_mm * ESCALA_VISUAL}px`;
     phone.style.width = `${d.width_mm * ESCALA_VISUAL}px`;
     phone.style.border = `3px solid ${index === 0 ? "#e74c3c" : "#3498db"}`;
     phone.style.borderRadius = `${d.curvatura_mm * ESCALA_VISUAL}px`;
     phone.style.backgroundColor =
       index === 0 ? "rgba(231, 76, 60, 0.1)" : "rgba(52, 152, 219, 0.1)";
+    phone.style.position = "relative";
+    phone.style.overflow = "hidden";
 
-    // Etiqueta del teléfono
+    if (d.notch && d.notch.type && d.notch.type !== "none") {
+      const notch = document.createElement("div");
+      notch.className = "phone-notch";
+
+      notch.style.position = "absolute";
+      notch.style.backgroundColor =
+        index === 0 ? "rgb(231, 76, 60)" : "rgb(52, 152, 219)";
+      notch.style.border = `3px solid ${index === 0 ? "#e74c3c" : "#3498db"}`;
+      notch.style.top = `${(d.notch.offsetTop || 0) * ESCALA_VISUAL}px`;
+
+      switch (d.notch.type) {
+        case "infinity-v":
+          notch.style.width = `${d.notch.width * ESCALA_VISUAL}px`;
+          notch.style.height = `${d.notch.height * ESCALA_VISUAL}px`;
+          notch.style.clipPath = "polygon(0 0, 50% 100%, 100% 0)";
+          notch.style.left = "50%";
+          notch.style.transform = "translateX(-50%)";
+          break;
+
+        case "waterdrop":
+          notch.style.width = `${d.notch.width * ESCALA_VISUAL}px`;
+          notch.style.height = `${d.notch.height * ESCALA_VISUAL}px`;
+          notch.style.borderRadius = "50% / 70%";
+          notch.style.left = "50%";
+          notch.style.transform = "translateX(-50%)";
+          break;
+
+        case "punch-hole":
+          notch.style.width = `${d.notch.width * ESCALA_VISUAL}px`;
+          notch.style.height = `${d.notch.height * ESCALA_VISUAL}px`;
+          notch.style.borderRadius = "50%";
+          notch.style.top = `${(d.notch.offsetTop || 0) * ESCALA_VISUAL}px`;
+          notch.style.left = `${
+            (d.notch.offsetLeft || d.width_mm / 2 - d.notch.width / 2) *
+            ESCALA_VISUAL
+          }px`;
+          break;
+
+        case "dynamic-island":
+          notch.style.width = `${d.notch.width * ESCALA_VISUAL}px`;
+          notch.style.height = `${d.notch.height * ESCALA_VISUAL}px`;
+          notch.style.borderRadius = `${
+            d.notch.radius ? d.notch.radius * ESCALA_VISUAL : 20
+          }px`;
+          notch.style.left = "50%";
+          notch.style.transform = "translateX(-50%)";
+          break;
+
+        case "notch":
+          notch.style.width = `${d.notch.width * ESCALA_VISUAL}px`;
+          notch.style.height = `${d.notch.height * ESCALA_VISUAL}px`;
+          notch.style.borderRadius = "0 0 10px 10px";
+          notch.style.left = "50%";
+          notch.style.transform = "translateX(-50%)";
+          break;
+      }
+
+      phone.appendChild(notch);
+    }
+
     const label = document.createElement("div");
     label.className = "phone-label";
     label.textContent = `${d.brand} ${d.model}`;
@@ -201,7 +352,6 @@ function comparePhones(selected) {
       label.style.color = "#e74c3c";
     }
 
-    // Dimensiones como texto
     const dimensions = document.createElement("div");
     dimensions.className = "phone-dimensions";
     dimensions.textContent = `${d.height_mm}×${d.width_mm}×${d.curvatura_mm}mm`;
@@ -215,7 +365,6 @@ function comparePhones(selected) {
     phone.appendChild(dimensions);
     canvas.appendChild(phone);
 
-    // Lista de resultados
     const li = document.createElement("div");
     li.className = "list-item";
     li.textContent = `${d.brand} ${d.model} (${d.height_mm}×${d.width_mm}×${d.curvatura_mm}mm)`;
@@ -228,13 +377,11 @@ function comparePhones(selected) {
     list.appendChild(li);
   });
 
-  // Mostrar estadísticas
   console.log(
     `Comparación completada: ${similares.length} teléfonos compatibles encontrados`
   );
 }
 
-// Función para limpiar la comparación
 function clearComparison() {
   const canvas = document.getElementById("canvas");
   const list = document.getElementById("list");
@@ -247,55 +394,72 @@ function clearComparison() {
   console.log("Comparación limpiada");
 }
 
-// Buscador interactivo con botón de borrar - CORREGIDO
+// ========================================
+// BUSCADOR - ✅ VERSIÓN CORREGIDA
+// ========================================
+
 function setupSearch() {
   const buscador = document.getElementById("buscador");
   const sugerencias = document.getElementById("sugerencias");
+  const clearBtn = document.getElementById("clear-search");
 
   if (!buscador || !sugerencias) {
     console.error("Faltan elementos #buscador o #sugerencias en el DOM");
     return;
   }
 
-  const clearBtn = document.getElementById("clear-search");
+  // Variable para controlar el cierre de sugerencias
+  let clickingOnSuggestion = false;
 
   buscador.addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase().trim();
     sugerencias.innerHTML = "";
 
-    if (clearBtn) clearBtn.style.display = query ? "block" : "none";
+    if (clearBtn) {
+      clearBtn.style.display = query ? "block" : "none";
+    }
 
-    // Si no hay búsqueda, limpiar comparación y ocultar sugerencias
     if (!query) {
       clearComparison();
       sugerencias.style.display = "none";
       return;
     }
 
-    // Filtrar dispositivos según la búsqueda
-    const resultados = devices.filter((d) =>
-      `${d.brand} ${d.model}`.toLowerCase().includes(query)
-    );
+    const resultados = devices.filter((d) => {
+      return d.brandModelLower.includes(query);
+    });
 
-    // Mostrar sugerencias si hay resultados
     if (resultados.length > 0) {
       sugerencias.style.display = "block";
 
-      // Limitar a 10 resultados
       resultados.slice(0, 10).forEach((d) => {
         const div = document.createElement("div");
         div.textContent = `${d.brand} ${d.model}`;
-        div.onclick = () => {
-          buscador.value = div.textContent;
+
+        // ✅ CORRECCIÓN: Prevenir cierre prematuro
+        div.addEventListener("mousedown", () => {
+          clickingOnSuggestion = true;
+        });
+
+        div.addEventListener("click", () => {
+          buscador.value = `${d.brand} ${d.model}`;
           sugerencias.innerHTML = "";
           sugerencias.style.display = "none";
           if (clearBtn) clearBtn.style.display = "block";
           comparePhones(d);
-        };
+          clickingOnSuggestion = false;
+        });
+
         sugerencias.appendChild(div);
       });
     } else {
-      sugerencias.style.display = "none";
+      // ✅ CORRECCIÓN: Mostrar mensaje cuando no hay resultados
+      sugerencias.style.display = "block";
+      sugerencias.innerHTML = `
+        <div style="padding: 16px; text-align: center; color: #999;">
+          No se encontraron resultados para "${e.target.value}"
+        </div>
+      `;
     }
   });
 
@@ -310,28 +474,33 @@ function setupSearch() {
     });
   }
 
-  // Mejor manejo del blur
+  // ✅ CORRECCIÓN: Solo cerrar si NO estamos haciendo clic en una sugerencia
   buscador.addEventListener("blur", () => {
     setTimeout(() => {
-      sugerencias.innerHTML = "";
-      sugerencias.style.display = "none";
-    }, 200);
+      if (!clickingOnSuggestion) {
+        sugerencias.innerHTML = "";
+        sugerencias.style.display = "none";
+      }
+      clickingOnSuggestion = false;
+    }, 300);
   });
 
-  // Mostrar sugerencias al hacer focus si hay contenido
   buscador.addEventListener("focus", () => {
     if (buscador.value.trim()) {
-      // Trigger input event para mostrar sugerencias
       buscador.dispatchEvent(new Event("input"));
     }
   });
+
+  console.log("✅ Buscador configurado correctamente");
 }
 
-// Botón de modo oscuro
+// ========================================
+// MODO OSCURO
+// ========================================
+
 const toggleBtn = document.getElementById("toggle-dark");
 
 if (toggleBtn) {
-  // Verificar estado inicial
   if (localStorage.getItem("dark-mode") === "true") {
     document.body.classList.add("dark-mode");
     toggleBtn.textContent = "Modo claro";
@@ -350,21 +519,56 @@ if (toggleBtn) {
   });
 }
 
-// Inicialización mejorada
+// ========================================
+// INICIALIZACIÓN
+// ========================================
+
 async function initialize() {
   try {
-    console.log("Inicializando aplicación...");
+    console.log("🚀 Inicializando aplicación...");
+
+    const supabaseOK = initSupabase();
+
+    if (!supabaseOK) {
+      console.error("❌ No se pudo inicializar Supabase");
+      console.error("💡 Configura las credenciales en admin.html primero");
+      showNoDataMessage();
+      return;
+    }
+
     await loadPhones();
     setupSearch();
-    console.log("Aplicación inicializada correctamente");
+
+    console.log("✅ Aplicación inicializada correctamente");
   } catch (error) {
-    console.error("Error al inicializar la aplicación:", error);
+    console.error("❌ Error al inicializar la aplicación:", error);
+    showNoDataMessage();
   }
 }
 
-// Inicializar cuando el DOM esté listo
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initialize);
 } else {
   initialize();
 }
+
+// ========================================
+// BONUS: Recargar datos
+// ========================================
+
+async function reloadData() {
+  console.log("🔄 Recargando datos...");
+  await loadPhones();
+  console.log("✅ Datos recargados");
+
+  if (lastSelected) {
+    const actualizado = devices.find(
+      (d) => d.brand === lastSelected.brand && d.model === lastSelected.model
+    );
+    if (actualizado) {
+      comparePhones(actualizado);
+    }
+  }
+}
+
+window.reloadPhoneData = reloadData;
