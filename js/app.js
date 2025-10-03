@@ -1,9 +1,12 @@
 // ========================================
 // CONFIGURACIÓN DE SUPABASE
 // ========================================
-
-const SUPABASE_URL = localStorage.getItem("supabaseUrl");
-const SUPABASE_ANON_KEY = localStorage.getItem("supabaseKey");
+const SUPABASE_URL =
+  localStorage.getItem("supabaseUrl") ||
+  "https://pvlodyxttslpxbndmthm.supabase.co";
+const SUPABASE_ANON_KEY =
+  localStorage.getItem("supabaseKey") ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2bG9keXh0dHNscHhibmRtdGhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNjAwOTAsImV4cCI6MjA3NDgzNjA5MH0.Szl3sOIzkY5Lc4UV-qUuK7lgp7Av_56gl0PK1HpiEwI";
 
 let supabase = null;
 
@@ -572,3 +575,4 @@ async function reloadData() {
 }
 
 window.reloadPhoneData = reloadData;
+
