@@ -1,18 +1,23 @@
+// Supabase Phones - Versión recomendada con auth dinámica
 // ========================================
-// CONFIGURACIÓN INICIAL
+// CONFIGURACIÓN INICIAL (coloca aquí tu proyecto)
 // ========================================
+const SUPABASE_URL = "https://pvlodyxttslpxbndmthm.supabase.co"; // <- reemplaza por tu URL
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2bG9keXh0dHNscHhibmRtdGhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNjAwOTAsImV4cCI6MjA3NDgzNjA5MH0.Szl3sOIzkY5Lc4UV-qUuK7lgp7Av_56gl0PK1HpiEwI"; // <- reemplaza por tu anon key (NO service_role)
 
+// ========================================
+// Estado global
+// ========================================
 let supabase = null;
 let phoneData = [];
 let isEditing = false;
-// Credenciales por defecto (fallback)
-const DEFAULT_URL = " ";
-const DEFAULT_KEY = " ";
+let currentUserUUID = null; // ahora mantenido desde supabase.auth
+let session = null;
 
 // ========================================
-// FUNCIÓN HELPER: NORMALIZAR DATOS
+// HELPERS
 // ========================================
-
 function normalizePhoneData(rawPhone) {
   if (!rawPhone) return null;
 
@@ -23,7 +28,6 @@ function normalizePhoneData(rawPhone) {
     height_mm: parseFloat(rawPhone.height_mm) || 0,
     width_mm: parseFloat(rawPhone.width_mm) || 0,
     curvatura_mm: parseFloat(rawPhone.curvatura_mm) || 0,
-    // Campos planos para compatibilidad con Supabase
     notch_type: rawPhone.notch_type || "none",
     notch_width_mm: parseFloat(rawPhone.notch_width_mm) || 0,
     notch_height_mm: parseFloat(rawPhone.notch_height_mm) || 0,
@@ -34,7 +38,7 @@ function normalizePhoneData(rawPhone) {
     notch_radius: rawPhone.notch_radius
       ? parseFloat(rawPhone.notch_radius)
       : null,
-    // Objeto anidado para facilitar acceso en UI
+    user_id: rawPhone.user_id || null,
     notch: {
       type: rawPhone.notch_type || "none",
       width: parseFloat(rawPhone.notch_width_mm) || 0,
@@ -48,112 +52,107 @@ function normalizePhoneData(rawPhone) {
   };
 }
 
-// ========================================
-// INICIALIZACIÓN
-// ========================================
+function showMessage(type, text) {
+  const element = document.getElementById(type + "Message");
+  if (!element) {
+    // Fallback console if no UI element
+    console[type === "error" ? "error" : "log"](text);
+    return;
+  }
+  element.textContent = text;
+  element.style.display = "block";
 
-window.addEventListener("DOMContentLoaded", function () {
-  loadConfig();
+  setTimeout(() => {
+    element.style.display = "none";
+  }, 5000);
+}
+
+// ========================================
+// INICIALIZACIÓN y AUTH
+// ========================================
+window.addEventListener("DOMContentLoaded", async () => {
+  initSupabaseClient();
+  attachAuthListeners();
+  await restoreSessionAndLoad();
 });
 
-// ========================================
-// CONFIGURACIÓN
-// ========================================
-
-function loadConfig() {
-  const url = localStorage.getItem("supabaseUrl") || DEFAULT_URL;
-  const key = localStorage.getItem("supabaseKey") || DEFAULT_KEY;
-
-  if (url && key) {
-    document.getElementById("supabaseUrl").value = url;
-    document.getElementById("supabaseKey").value = key;
-    document.getElementById("configUrl").value = url;
-    document.getElementById("configKey").value = key;
-
-    // Conectar automáticamente
-    setTimeout(() => {
-      connectSupabase();
-    }, 500);
-  }
+function initSupabaseClient() {
+  // Usamos el SDK global window.supabase que provee @supabase/supabase-js en el HTML
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { persistSession: true },
+  });
+  console.info("Supabase client inicializado");
 }
 
-function saveConfig() {
-  const url = document.getElementById("configUrl").value.trim();
-  const key = document.getElementById("configKey").value.trim();
-
-  if (!url || !key) {
-    showMessage("error", "⚠️ Por favor completa ambos campos");
-    return;
-  }
-
-  document.getElementById("supabaseUrl").value = url;
-  document.getElementById("supabaseKey").value = key;
-
-  connectSupabase();
+function attachAuthListeners() {
+  // Escuchar cambios de sesión (login/logout)
+  supabase.auth.onAuthStateChange((event, newSession) => {
+    console.log("Auth event:", event);
+    session = newSession;
+    currentUserUUID = session?.user?.id ?? null;
+    updateAuthUI();
+    // Si hay sesión activa, recargar datos
+    if (session?.user) loadData().catch((e) => console.error(e));
+  });
 }
 
-function toggleConfig() {
-  const section = document.getElementById("configSection");
-  section.style.display = section.style.display === "none" ? "block" : "none";
-}
-
-// ========================================
-// CONEXIÓN A SUPABASE
-// ========================================
-
-async function connectSupabase() {
-  const url =
-    document.getElementById("supabaseUrl").value.trim() ||
-    document.getElementById("configUrl").value.trim();
-  const key =
-    document.getElementById("supabaseKey").value.trim() ||
-    document.getElementById("configKey").value.trim();
-
-  if (!url || !key) {
-    showMessage("error", "⚠️ Por favor ingresa la URL y la Key de Supabase");
-    updateConnectionStatus(false);
-    return;
-  }
-
+async function restoreSessionAndLoad() {
   try {
-    supabase = window.supabase.createClient(url, key);
+    // Obtener sesión actual (según versión de supabase-js)
+    // En versiones más nuevas: supabase.auth.getSession()
+    const maybeSession =
+      (await supabase.auth.getSession?.())?.data?.session ??
+      supabase.auth.session?.();
+    session = maybeSession ?? null;
+    currentUserUUID = session?.user?.id ?? null;
 
-    // Guardar en localStorage
-    localStorage.setItem("supabaseUrl", url);
-    localStorage.setItem("supabaseKey", key);
+    updateAuthUI();
 
+    // Conectar y probar lectura pública (SELECT)
     const success = await testConnection();
-
-    if (success) {
-      document.getElementById("configSection").style.display = "none";
-      await loadData();
-    }
+    if (success) await loadData();
   } catch (error) {
-    console.error("Error al conectar:", error);
-    showMessage("error", "❌ Error al conectar: " + error.message);
-    updateConnectionStatus(false);
+    console.error("Error restaurando sesión:", error);
   }
 }
 
+function updateAuthUI() {
+  const loggedIn = !!currentUserUUID;
+  const userIdElem = document.getElementById("userId");
+  const authSection = document.getElementById("authSection");
+  const appSection = document.getElementById("appSection");
+
+  if (userIdElem)
+    userIdElem.textContent = loggedIn ? currentUserUUID : "No autenticado";
+  if (authSection) authSection.style.display = loggedIn ? "none" : "block";
+  if (appSection) appSection.style.display = loggedIn ? "block" : "none";
+
+  updateConnectionStatus(!!supabase);
+}
+
+// ========================================
+// CONEXIÓN A SUPABASE (prueba simple SELECT head)
+// ========================================
 async function testConnection() {
   if (!supabase) {
-    showMessage("error", "⚠️ Primero configura la conexión a Supabase");
+    showMessage("error", "⚠️ Cliente Supabase no inicializado");
     return false;
   }
 
   try {
+    // Prueba de lectura (HEAD) para verificar conexión
     const { data, error } = await supabase
       .from("phones")
       .select("*", { count: "exact", head: true });
 
     if (error) throw error;
 
-    showMessage("success", "✅ Conexión exitosa a Supabase");
+    showMessage("success", "✅ Conexión exitosa a Supabase (lectura)");
     updateConnectionStatus(true);
     return true;
   } catch (error) {
     console.error("Error de conexión:", error);
-    showMessage("error", "❌ Error de conexión: " + error.message);
+    showMessage("error", "❌ Error de conexión: " + (error.message || error));
     updateConnectionStatus(false);
     return false;
   }
@@ -161,6 +160,7 @@ async function testConnection() {
 
 function updateConnectionStatus(connected) {
   const status = document.getElementById("connectionStatus");
+  if (!status) return;
   if (connected) {
     status.className = "connection-status connected";
     status.textContent = "✅ Conectado a Supabase";
@@ -171,9 +171,47 @@ function updateConnectionStatus(connected) {
 }
 
 // ========================================
-// GESTIÓN DE DATOS
+// AUTENTICACIÓN: Login / Logout
+// - Magic link (email) y Sign out
 // ========================================
+async function signInWithEmail() {
+  const email = document.getElementById("authEmail")?.value?.trim();
+  if (!email) {
+    showMessage("error", "⚠️ Ingresa un email para iniciar sesión");
+    return;
+  }
 
+  try {
+    const { data, error } = await supabase.auth.signInWithOtp({ email });
+    if (error) throw error;
+    showMessage(
+      "success",
+      `✅ Link de acceso enviado a ${email}. Revisa tu correo.`
+    );
+  } catch (error) {
+    console.error("Error signIn:", error);
+    showMessage("error", "❌ Error al iniciar sesión: " + error.message);
+  }
+}
+
+async function signOut() {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    showMessage("success", "✅ Sesión cerrada");
+    currentUserUUID = null;
+    phoneData = [];
+    updateDisplay();
+    updateAuthUI();
+  } catch (error) {
+    console.error("Error signOut:", error);
+    showMessage("error", "❌ Error al cerrar sesión: " + error.message);
+  }
+}
+
+// ========================================
+// CARGA DE DATOS
+// ========================================
 async function loadData() {
   if (!supabase) {
     showMessage("error", "⚠️ Primero configura la conexión a Supabase");
@@ -183,6 +221,8 @@ async function loadData() {
   document.getElementById("loadingIndicator").style.display = "block";
 
   try {
+    // Para mostrar todo (SELECT público) usamos la policy existente.
+    // Si cambias SELECT a owner-only, cambia esta consulta por `.eq('user_id', currentUserUUID)` si quieres solo datos del usuario
     const { data, error } = await supabase
       .from("phones")
       .select("*")
@@ -190,7 +230,6 @@ async function loadData() {
 
     if (error) throw error;
 
-    // ✅ CORRECCIÓN: Normalizar todos los datos
     phoneData = (data || []).map(normalizePhoneData);
 
     updateDisplay();
@@ -201,13 +240,19 @@ async function loadData() {
     );
   } catch (error) {
     console.error("Error al cargar datos:", error);
-    showMessage("error", "❌ Error al cargar datos: " + error.message);
+    showMessage(
+      "error",
+      "❌ Error al cargar datos: " + (error.message || error)
+    );
     phoneData = [];
   } finally {
     document.getElementById("loadingIndicator").style.display = "none";
   }
 }
 
+// ========================================
+// FORM SUBMIT (INSERT / UPDATE)
+// ========================================
 async function handleSubmit(event) {
   event.preventDefault();
 
@@ -216,10 +261,15 @@ async function handleSubmit(event) {
     return;
   }
 
+  const authUserId = supabase.auth.user()?.id;
+  if (!authUserId) {
+    showMessage("error", "⚠️ Debes iniciar sesión para realizar cambios");
+    return;
+  }
+
   const formData = new FormData(event.target);
   const editingId = document.getElementById("editingId").value;
 
-  // ✅ VALIDACIÓN: Verificar que las dimensiones sean positivas
   const height = parseFloat(formData.get("height"));
   const width = parseFloat(formData.get("width"));
   const curvatura = parseFloat(formData.get("curvatura"));
@@ -239,7 +289,6 @@ async function handleSubmit(event) {
     return;
   }
 
-  // ✅ VALIDACIÓN: El notch no puede ser más grande que la pantalla
   if (notchHeight > height || notchWidth > width) {
     showMessage("error", "❌ El notch no puede ser más grande que la pantalla");
     return;
@@ -261,10 +310,20 @@ async function handleSubmit(event) {
     notch_radius: formData.get("notchRadius")
       ? parseFloat(formData.get("notchRadius"))
       : null,
+    user_id: authUserId, // <-- usamos auth user id dinámico
   };
 
   try {
     if (editingId) {
+      // Verificamos localmente que el registro pertenezca al usuario antes de intentar actualizar
+      const existing = phoneData.find(
+        (p) => String(p.id) === String(editingId)
+      );
+      if (existing && existing.user_id && existing.user_id !== authUserId) {
+        showMessage("error", "❌ No autorizado para editar este registro");
+        return;
+      }
+
       const { data, error } = await supabase
         .from("phones")
         .update(phoneModel)
@@ -294,17 +353,50 @@ async function handleSubmit(event) {
     clearForm();
     await loadData();
   } catch (error) {
-    console.error("Error:", error);
-    showMessage("error", "❌ Error: " + error.message);
+    console.error("Error en submit:", error);
+
+    // Detectar problema RLS/permiso
+    const errMsg = error?.message ?? JSON.stringify(error);
+    if (
+      errMsg.includes("policy") ||
+      errMsg.includes("permission") ||
+      error?.code === "42501"
+    ) {
+      showMessage(
+        "error",
+        "❌ UUID no autorizado. Verifica que estés logueado con el usuario correcto."
+      );
+    } else {
+      showMessage("error", "❌ Error: " + errMsg);
+    }
   }
 }
 
+// ========================================
+// DELETE
+// ========================================
 async function deleteModel(id, brand, model) {
-  if (!confirm(`¿Estás seguro de eliminar ${brand} ${model}?`)) {
+  if (!supabase) {
+    showMessage("error", "⚠️ Primero configura la conexión a Supabase");
     return;
   }
 
+  const authUserId = supabase.auth.user()?.id;
+  if (!authUserId) {
+    showMessage("error", "⚠️ Debes iniciar sesión para eliminar");
+    return;
+  }
+
+  if (!confirm(`¿Estás seguro de eliminar ${brand} ${model}?`)) return;
+
   try {
+    // Verificamos localmente propiedad
+    const existing = phoneData.find((p) => String(p.id) === String(id));
+    if (existing && existing.user_id && existing.user_id !== authUserId) {
+      showMessage("error", "❌ No autorizado para eliminar este registro");
+      return;
+    }
+
     const { error } = await supabase.from("phones").delete().eq("id", id);
 
     if (error) throw error;
@@ -313,13 +405,26 @@ async function deleteModel(id, brand, model) {
     await loadData();
   } catch (error) {
     console.error("Error al eliminar:", error);
-    showMessage("error", "❌ Error: " + error.message);
+    const errMsg = error?.message ?? JSON.stringify(error);
+    if (
+      errMsg.includes("policy") ||
+      errMsg.includes("permission") ||
+      error?.code === "42501"
+    ) {
+      showMessage(
+        "error",
+        "❌ UUID no autorizado para eliminar este registro."
+      );
+    } else {
+      showMessage("error", "❌ Error: " + errMsg);
+    }
   }
 }
 
-// ✅ CORRECCIÓN BUG #1: editModel() ahora accede correctamente a los campos
+// ========================================
+// EDIT / CLEAR FORM
+// ========================================
 function editModel(phone) {
-  // Usar campos planos directamente (ya normalizados)
   document.getElementById("brand").value = phone.brand;
   document.getElementById("model").value = phone.model;
   document.getElementById("width").value = phone.width_mm;
@@ -341,24 +446,28 @@ function editModel(phone) {
 }
 
 function clearForm() {
-  document.getElementById("modelForm").reset();
-  document.getElementById("editingId").value = "";
-  document.getElementById("submitBtn").textContent = "AGREGAR MODELO";
+  const form = document.getElementById("modelForm");
+  if (form) form.reset();
+  const editingInput = document.getElementById("editingId");
+  if (editingInput) editingInput.value = "";
+  const submitBtn = document.getElementById("submitBtn");
+  if (submitBtn) submitBtn.textContent = "AGREGAR MODELO";
 }
 
 // ========================================
-// INTERFAZ
+// UI: renderización de cards y stats
 // ========================================
-
-// ✅ CORRECCIÓN BUG #2: updateDisplay() ahora usa campos normalizados
 function updateDisplay() {
   const grid = document.getElementById("modelsGrid");
-  const searchTerm = document.getElementById("searchBox").value.toLowerCase();
+  if (!grid) return;
+  const searchTerm = (
+    document.getElementById("searchBox")?.value || ""
+  ).toLowerCase();
 
   const filteredPhones = phoneData.filter(
     (phone) =>
-      phone.brand.toLowerCase().includes(searchTerm) ||
-      phone.model.toLowerCase().includes(searchTerm)
+      (phone.brand || "").toLowerCase().includes(searchTerm) ||
+      (phone.model || "").toLowerCase().includes(searchTerm)
   );
 
   if (filteredPhones.length === 0) {
@@ -368,45 +477,38 @@ function updateDisplay() {
   }
 
   grid.innerHTML = filteredPhones
-    .map(
-      (phone) => `
-        <div class="model-card">
-            <h3>${phone.brand} ${phone.model}</h3>
-            <div class="model-info">
-                <p><strong>Ancho:</strong> <span>${phone.width_mm} mm</span></p>
-                <p><strong>Alto:</strong> <span>${phone.height_mm} mm</span></p>
-                <p><strong>Curvatura:</strong> <span>${
-                  phone.curvatura_mm
-                } mm</span></p>
-                <p><strong>Notch:</strong> <span>${phone.notch_type}</span></p>
-                <p><strong>Notch Size:</strong> <span>${phone.notch_width_mm}x${
-        phone.notch_height_mm
-      } mm</span></p>
-                <p><strong>ID:</strong> <span>#${phone.id}</span></p>
-            </div>
-            <div class="model-actions">
-                <button class="btn btn-secondary btn-small" onclick='editModel(${JSON.stringify(
-                  phone
-                ).replace(/'/g, "&#39;")})'>Editar</button>
-                <button class="btn btn-danger btn-small" onclick="deleteModel(${
-                  phone.id
-                }, '${phone.brand.replace(
-        /'/g,
-        "\\'"
-      )}', '${phone.model.replace(/'/g, "\\'")}')">Eliminar</button>
-            </div>
+    .map((phone) => {
+      const safeBrand = (phone.brand || "").replace(/'/g, "\\'");
+      const safeModel = (phone.model || "").replace(/'/g, "\\'");
+      const payload = JSON.stringify(phone).replace(/'/g, "&#39;");
+      return `
+        <div class="model-card" data-phone='${payload}'>
+          <h3>${phone.brand} ${phone.model}</h3>
+          …          
+          <div class="model-actions">
+            <button class="btn btn-secondary btn-small js-edit">Editar</button>
+            <button class="btn btn-danger btn-small js-delete"
+              data-id="${phone.id}"
+              data-brand="${safeBrand}"
+              data-model="${safeModel}">
+              Eliminar
+            </button>
+          </div>
         </div>
-    `
-    )
+      `;
+    })
     .join("");
 }
 
+// Helper para llamar editModel desde el HTML generado (evita problemas con JSON en onclick)
+window.__editModelFromCard = function (phone) {
+  editModel(phone);
+};
+
 function updateStats() {
   document.getElementById("totalModels").textContent = phoneData.length;
-
   const brands = [...new Set(phoneData.map((phone) => phone.brand))];
   document.getElementById("totalBrands").textContent = brands.length;
-
   const sizes = [
     ...new Set(
       phoneData.map((phone) => `${phone.width_mm}x${phone.height_mm}`)
@@ -415,25 +517,20 @@ function updateStats() {
   document.getElementById("totalSizes").textContent = sizes.length;
 }
 
-function showTab(tabName) {
-  document.querySelectorAll(".tab-content").forEach((content) => {
-    content.classList.remove("active");
-  });
+// ========================================
+// EXPORTS (si los necesitas) o attach events
+// ========================================
+// Conectar el form submit
+document.addEventListener("submit", function (e) {
+  if (e.target && e.target.id === "modelForm") {
+    handleSubmit(e);
+  }
+});
 
-  document.querySelectorAll(".tab").forEach((tab) => {
-    tab.classList.remove("active");
-  });
-
-  document.getElementById(tabName).classList.add("active");
-  event.target.classList.add("active");
-}
-
-function showMessage(type, text) {
-  const element = document.getElementById(type + "Message");
-  element.textContent = text;
-  element.style.display = "block";
-
-  setTimeout(() => {
-    element.style.display = "none";
-  }, 4000);
-}
+// Botones de auth (si existen en DOM)
+document.addEventListener("click", function (e) {
+  const id = e.target?.id;
+  if (id === "btnSignIn") signInWithEmail();
+  if (id === "btnSignOut") signOut();
+  if (id === "btnRefresh") loadData();
+});
