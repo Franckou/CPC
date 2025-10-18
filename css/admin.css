@@ -328,6 +328,150 @@ body {
   animation: slideIn 0.3s ease;
 }
 
+/* ==========================================
+   ESTILOS ADICIONALES PARA LOGIN
+   Agregar al final de admin.css
+   ========================================== */
+
+/* Pantalla de Login */
+.login-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.login-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-header h1 {
+  color: #2c3e50;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.login-header p {
+  color: #7f8c8d;
+  font-size: 1rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-form .form-group {
+  margin-bottom: 0;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.btn-block {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 25px;
+  color: #95a5a6;
+}
+
+/* User Info en Header */
+.user-info {
+  display: flex;
+  align-items: center;
+  padding: 1vw 0 1vw 0;
+}
+
+.user-info span {
+  display: none;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* Profile Info */
+.profile-info {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 10px;
+  line-height: 2;
+}
+
+.profile-info p {
+  margin-bottom: 10px;
+}
+
+.profile-info strong {
+  color: #2c3e50;
+  min-width: 150px;
+  display: inline-block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-card {
+    padding: 30px 20px;
+  }
+
+  .login-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .user-info {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .header > div:first-child {
+    width: 100%;
+  }
+}
+
 @keyframes slideIn {
   from {
     transform: translateX(-100%);
