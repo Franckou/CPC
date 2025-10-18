@@ -1,124 +1,291 @@
-<div class="tabs">
-      <button class="tab active" onclick="showTab('manage')">
-        Gestionar Modelos
-      </button>
-      <button class="tab" onclick="showTab('config')">Configuración</button>
-    </div>
-
-    <!-- Auth section (muestra cuando NO está logueado) -->
-    <div id="authSection" style="margin: 20px 0; padding: 12px; border: 1px solid #eee; border-radius: 8px;">
-      <h3>🔐 Iniciar sesión</h3>
-      <p>Ingresa tu email para recibir un magic link (acceso sin contraseña).</p>
-      <div style="display:flex; gap:8px; align-items:center;">
-        <input type="email" id="authEmail" placeholder="tu@correo.com" style="flex:1; padding:8px;" />
-        <button class="btn btn-primary" id="btnSignIn">Enviar link</button>
-      </div>
-      <p style="margin-top:8px; color:#666; font-size:0.9em;">
-        Revisa tu bandeja de entrada (y carpeta de spam). Al abrir el link volverás aquí ya autenticado.
-      </p>
-    </div>
-
-    <!-- App section (muestra cuando SÍ está logueado) -->
-    <div id="appSection" style="display:none;">
-      <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
-        <button class="btn btn-secondary" id="btnSignOut">Cerrar sesión</button>
-        <button class="btn btn-primary" id="btnRefresh">Refrescar datos</button>
-      </div>
-
-      <!-- Tab: Gestionar Modelos -->
-      <div id="manage" class="tab-content active">
-        <div class="stats">
-          <div class="stat-card">
-            <div class="stat-number" id="totalModels">0</div>
-            <div class="stat-label">Modelos Total</div>
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="/css/admin.css" />
+    <title>Panel de Admin - DisplaySync</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- PANTALLA DE LOGIN -->
+      <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+          <div class="login-header">
+            <h1>📱 DisplaySync Admin</h1>
+            <p>Inicia sesión para gestionar modelos</p>
           </div>
-          <div class="stat-card">
-            <div class="stat-number" id="totalBrands">0</div>
-            <div class="stat-label">Marcas</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="totalSizes">0</div>
-            <div class="stat-label">Tamaños</div>
-          </div>
-        </div>
 
-        <div class="form-section">
-          <h2 style="margin-bottom: 25px; color: #2c3e50">➕ Agregar Nuevo Modelo</h2>
-          <form id="modelForm" onsubmit="handleSubmit(event)">
+          <div
+            id="loginError"
+            class="error-message"
+            style="display: none"
+          ></div>
+
+          <form id="loginForm" class="login-form">
             <div class="form-group">
-              <label for="brand">Marca *</label>
-              <input type="text" id="brand" name="brand" required placeholder="Ej: Apple, Samsung, Xiaomi..." />
+              <label for="loginEmail">Email</label>
+              <input
+                type="email"
+                id="loginEmail"
+                name="email"
+                required
+                placeholder="admin@displaysync.com"
+                autocomplete="email"
+              />
             </div>
 
             <div class="form-group">
-              <label for="model">Modelo *</label>
-              <input type="text" id="model" name="model" required placeholder="Ej: iPhone 15 Pro, Galaxy S24..." />
+              <label for="loginPassword">Contraseña</label>
+              <input
+                type="password"
+                id="loginPassword"
+                name="password"
+                required
+                placeholder="••••••••"
+                autocomplete="current-password"
+              />
             </div>
 
-            <div class="form-group">
-              <label>Dimensiones (mm)</label>
-              <div class="size-inputs">
-                <input type="number" id="width" name="width" placeholder="Ancho" required step="0.1" aria-label="Ancho en milímetros" />
-                <input type="number" id="height" name="height" placeholder="Alto" required step="0.1" aria-label="Alto en milímetros" />
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="curvatura">Curvatura (mm)</label>
-              <input type="number" id="curvatura" name="curvatura" placeholder="Ej: 8.0" step="0.1" required />
-            </div>
-
-            <div class="form-group">
-              <label>Configuración del Notch</label>
-              <div class="form-group">
-                <label for="notchType">Tipo de Notch</label>
-                <select id="notchType" name="notchType" required>
-                  <option value="">Seleccionar tipo...</option>
-                  <option value="infinity-v">Infinity V</option>
-                  <option value="waterdrop">Waterdrop</option>
-                  <option value="punch-hole">Punch Hole</option>
-                  <option value="dynamic-island">Dynamic Island</option>
-                  <option value="notch">Notch Clásico</option>
-                  <option value="none">Sin Notch</option>
-                </select>
-              </div>
-              <div class="size-inputs">
-                <input type="number" id="notchWidth" name="notchWidth" placeholder="Ancho Notch" step="0.1" required aria-label="Ancho del notch en milímetros" />
-                <input type="number" id="notchHeight" name="notchHeight" placeholder="Alto Notch" step="0.1" required aria-label="Alto del notch en milímetros" />
-              </div>
-              <div class="size-inputs">
-                <input type="number" id="notchOffsetTop" name="notchOffsetTop" placeholder="Offset Top" step="0.1" aria-label="Desplazamiento superior del notch" />
-                <input type="number" id="notchOffsetLeft" name="notchOffsetLeft" placeholder="Offset Left (opcional)" step="0.1" aria-label="Desplazamiento izquierdo del notch" />
-              </div>
-              <div class="form-group">
-                <label for="notchRadius">Radio del Notch (opcional)</label>
-                <input type="number" id="notchRadius" name="notchRadius" placeholder="Ej: 10" step="0.1" />
-              </div>
-            </div>
-
-            <input type="hidden" id="editingId" value="" />
-            <button type="submit" class="btn btn-primary" id="submitBtn">AGREGAR MODELO</button>
-            <button type="button" class="btn btn-secondary" onclick="clearForm()">LIMPIAR</button>
+            <button
+              type="submit"
+              class="btn btn-primary btn-block"
+              id="btnLogin"
+            >
+              🔐 INICIAR SESIÓN
+            </button>
           </form>
-        </div>
 
-        <div style="margin-bottom: 20px">
-          <label for="searchBox" style="display: none">Buscar modelos</label>
-          <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar modelos por marca o modelo..." oninput="updateDisplay()" />
+          <div class="login-footer">
+            <small>Supabase Authentication</small>
+          </div>
         </div>
-
-        <div id="loadingIndicator" class="loading" style="display: none">Cargando modelos</div>
-        <div class="models-grid" id="modelsGrid"></div>
       </div>
 
-      <!-- Tab: Configuración (solo información) -->
-      <div id="config" class="tab-content" style="display:none;">
-        <div class="form-section">
-          <h2 style="margin-bottom: 25px; color: #2c3e50">⚙️ Información</h2>
-          <p style="color:#666">La URL y la anon key están configuradas en el archivo JS como constantes. Para cambiar proyecto, edita <code>/js/admin.js</code> y reemplaza SUPABASE_URL y SUPABASE_ANON_KEY.</p>
-          <p style="color:#666">Recomiendo mantener la anon key en el frontend y nunca exponer la service_role key.</p>
+      <!-- PANTALLA PRINCIPAL (oculta hasta login) -->
+      <div id="mainScreen" style="display: none">
+        <div class="header">
+          <div>
+            <h1>📱 Panel de Administración - DisplaySync</h1>
+            <div id="connectionStatus" class="connection-status connected">
+              ✅ Conectado
+            </div>
+          </div>
+          <div class="user-info">
+            <span id="userEmail">usuario@email.com</span>
+            <button class="btn btn-secondary btn-small" id="btnLogout">
+              🚪 Cerrar Sesión
+            </button>
+          </div>
+        </div>
+
+        <div class="main-content">
+          <div id="successMessage" class="success-message"></div>
+          <div id="errorMessage" class="error-message"></div>
+
+          <div class="tabs">
+            <button class="tab active" data-tab="manage">
+              Gestionar Modelos
+            </button>
+            <button class="tab" data-tab="profile">Mi Perfil</button>
+          </div>
+
+          <!-- Tab: Gestionar Modelos -->
+          <div id="manage" class="tab-content active">
+            <div class="stats">
+              <div class="stat-card">
+                <div class="stat-number" id="totalModels">0</div>
+                <div class="stat-label">Modelos Total</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-number" id="totalBrands">0</div>
+                <div class="stat-label">Marcas</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-number" id="totalSizes">0</div>
+                <div class="stat-label">Tamaños</div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h2 style="margin-bottom: 25px; color: #2c3e50">
+                ➕ Agregar Nuevo Modelo
+              </h2>
+              <form id="modelForm">
+                <div class="form-group">
+                  <label for="brand">Marca *</label>
+                  <input
+                    type="text"
+                    id="brand"
+                    name="brand"
+                    required
+                    placeholder="Ej: Apple, Samsung, Xiaomi..."
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="model">Modelo *</label>
+                  <input
+                    type="text"
+                    id="model"
+                    name="model"
+                    required
+                    placeholder="Ej: iPhone 15 Pro, Galaxy S24..."
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>Dimensiones (mm)</label>
+                  <div class="size-inputs">
+                    <input
+                      type="number"
+                      id="width"
+                      name="width"
+                      placeholder="Ancho"
+                      required
+                      step="0.1"
+                      aria-label="Ancho en milímetros"
+                    />
+                    <input
+                      type="number"
+                      id="height"
+                      name="height"
+                      placeholder="Alto"
+                      required
+                      step="0.1"
+                      aria-label="Alto en milímetros"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="curvatura">Curvatura (mm)</label>
+                  <input
+                    type="number"
+                    id="curvatura"
+                    name="curvatura"
+                    placeholder="Ej: 8.0"
+                    step="0.1"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>Configuración del Notch</label>
+                  <div class="form-group">
+                    <label for="notchType">Tipo de Notch</label>
+                    <select id="notchType" name="notchType" required>
+                      <option value="">Seleccionar tipo...</option>
+                      <option value="infinity-v">Infinity V</option>
+                      <option value="waterdrop">Waterdrop</option>
+                      <option value="punch-hole">Punch Hole</option>
+                      <option value="dynamic-island">Dynamic Island</option>
+                      <option value="notch">Notch Clásico</option>
+                      <option value="none">Sin Notch</option>
+                    </select>
+                  </div>
+                  <div class="size-inputs">
+                    <input
+                      type="number"
+                      id="notchWidth"
+                      name="notchWidth"
+                      placeholder="Ancho Notch"
+                      step="0.1"
+                      required
+                      aria-label="Ancho del notch"
+                    />
+                    <input
+                      type="number"
+                      id="notchHeight"
+                      name="notchHeight"
+                      placeholder="Alto Notch"
+                      step="0.1"
+                      required
+                      aria-label="Alto del notch"
+                    />
+                  </div>
+                  <div class="size-inputs">
+                    <input
+                      type="number"
+                      id="notchOffsetTop"
+                      name="notchOffsetTop"
+                      placeholder="Offset Top"
+                      step="0.1"
+                      aria-label="Offset superior"
+                    />
+                    <input
+                      type="number"
+                      id="notchOffsetLeft"
+                      name="notchOffsetLeft"
+                      placeholder="Offset Left (opcional)"
+                      step="0.1"
+                      aria-label="Offset izquierdo"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="notchRadius">Radio del Notch (opcional)</label>
+                    <input
+                      type="number"
+                      id="notchRadius"
+                      name="notchRadius"
+                      placeholder="Ej: 10"
+                      step="0.1"
+                    />
+                  </div>
+                </div>
+
+                <input type="hidden" id="editingId" value="" />
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                  AGREGAR MODELO
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  id="btnClearForm"
+                >
+                  LIMPIAR
+                </button>
+              </form>
+            </div>
+
+            <div style="margin-bottom: 20px">
+              <label for="searchBox" style="display: none"
+                >Buscar modelos</label
+              >
+              <input
+                type="text"
+                class="search-box"
+                id="searchBox"
+                placeholder="🔍 Buscar modelos por marca o modelo..."
+              />
+            </div>
+
+            <div id="loadingIndicator" class="loading" style="display: none">
+              Cargando modelos
+            </div>
+            <div class="models-grid" id="modelsGrid"></div>
+          </div>
+
+          <!-- Tab: Mi Perfil -->
+          <div id="profile" class="tab-content">
+            <div class="form-section">
+              <h2 style="margin-bottom: 25px; color: #2c3e50">👤 Mi Perfil</h2>
+              <div class="profile-info">
+                <p><strong>Email:</strong> <span id="profileEmail">-</span></p>
+                <p><strong>UUID:</strong> <span id="profileUUID">-</span></p>
+                <p>
+                  <strong>Sesión iniciada:</strong>
+                  <span id="profileLoginTime">-</span>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
+
+    <script src="/js/admin.js" defer></script>
+  </body>
+</html>
