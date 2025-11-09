@@ -8,9 +8,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="css/styles.css" />
     <script src="js/app.js" defer></script>
-    <script> 
+    <!-- <script>
       alert("Pagina en mantenimiento\nactualizando base de datos");
-    </script>
+    </script>-->
     <script>
       if (localStorage.getItem("dark-mode") === "true") {
         document.documentElement.classList.add("dark-mode");
@@ -43,14 +43,26 @@
       </section>
 
       <!-- Zona de comparación -->
+       
+      <!-- Comparacion por pulgadas -->
+      <section id="container-inches">
+        <h1 class="title-inches">Compatibilidad por Pulgadas</h1>
+        <div id="lista-inches"></div>
+      </section>
+
+      <!-- Comparacion por tamaño -->
+	<h1 class="title-size">Compatibilidad por Tamaño</h1>
       <section id="comparacion" aria-label="Zona de comparación">
+        <!-- advertencia con blur -->
+       	  <div class="blur"> 
+            <h1 class="advertencia">Trabajando la base de datos</h1>
+          </div>
         <!-- Lista lateral de modelos -->
         <aside
           id="list"
           class="listado"
           aria-label="Lista de modelos disponibles"
         ></aside>
-
         <!-- Vista previa de teléfonos -->
         <div
           id="canvas"
@@ -64,8 +76,3 @@
     </main>
   </body>
 </html>
-
-
-
-
-
