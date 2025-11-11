@@ -141,6 +141,10 @@ body.dark-mode #clear-search:hover {
   border-radius: 10px;
   justify-content: center;
 }
+/* BORRA EL BLUR */
+.blur{
+  display: none;
+}
 .advertencia {
   align-content: center;
 }
@@ -292,6 +296,7 @@ aside.listado,
   min-width: 0;
   gap: 15px; /* Espaciado entre elementos */
   align-items: end;
+  margin-left: 30px;
 }
 
 .phone {
@@ -315,12 +320,6 @@ aside.listado,
   min-width: 120px;
   border: 1px solid #e0e0e0;
 }
-
-/*↓ BORRAR PARA MOSTRAR LOS TELEFONOS ↓*/
-.phone {
-  display: none;
-}
-
 
 .phone:hover {
   transform: translateY(-4px);
@@ -628,3 +627,4 @@ body.dark-mode * {
     margin-right: 0;
   }
 }
+
