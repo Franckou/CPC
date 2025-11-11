@@ -59,6 +59,10 @@ function normalizePhoneData(rawPhone) {
     rawPhone.curvatura_mm !== undefined && rawPhone.curvatura_mm !== null
       ? Number(rawPhone.curvatura_mm)
       : NaN;
+  const inches =
+    rawPhone.inches !== undefined && rawPhone.inches !== null
+      ? Number(rawPhone.inches)
+      : NaN;
 
   return {
     ...rawPhone,
@@ -67,33 +71,8 @@ function normalizePhoneData(rawPhone) {
     height_mm: isNaN(height) ? null : height,
     width_mm: isNaN(width) ? null : width,
     curvatura_mm: isNaN(curv) ? null : curv,
-    notch: {
-      type: rawPhone.notch_type || "none",
-      width:
-        rawPhone.notch_width_mm !== undefined &&
-        rawPhone.notch_width_mm !== null
-          ? Number(rawPhone.notch_width_mm)
-          : 0,
-      height:
-        rawPhone.notch_height_mm !== undefined &&
-        rawPhone.notch_height_mm !== null
-          ? Number(rawPhone.notch_height_mm)
-          : 0,
-      offsetTop:
-        rawPhone.notch_offset_top !== undefined &&
-        rawPhone.notch_offset_top !== null
-          ? Number(rawPhone.notch_offset_top)
-          : 0,
-      offsetLeft:
-        rawPhone.notch_offset_left !== undefined &&
-        rawPhone.notch_offset_left !== null
-          ? Number(rawPhone.notch_offset_left)
-          : null,
-      radius:
-        rawPhone.notch_radius !== undefined && rawPhone.notch_radius !== null
-          ? Number(rawPhone.notch_radius)
-          : null,
-    },
+    inches: isNaN(inches) ? null : inches,
+    notch_type: rawPhone.notch_type || "none",
     brandModelLower: `${rawPhone.brand || ""} ${
       rawPhone.model || ""
     }`.toLowerCase(),
@@ -133,7 +112,10 @@ async function loadPhones() {
 
     const incompletos = devices.filter(
       (x) =>
-        x.height_mm === null || x.width_mm === null || x.curvatura_mm === null
+        x.height_mm === null || 
+        x.width_mm === null || 
+        x.curvatura_mm === null ||
+        x.inches === null
     );
 
     if (incompletos.length > 0) {
@@ -160,6 +142,95 @@ function showNoDataMessage() {
       </div>
     `;
   }
+}
+
+// ========================================
+// ✅ NUEVA: COMPATIBILIDAD POR PULGADAS
+// ========================================
+
+function displayInchesCompatibility(selected) {
+  const listaInches = document.getElementById("lista-inches");
+  
+  if (!listaInches) {
+    console.error("Elemento #lista-inches no encontrado");
+    return;
+  }
+
+  listaInches.innerHTML = "";
+
+  if (selected.inches === null || isNaN(selected.inches)) {
+    listaInches.innerHTML = `
+      <p style="text-align: center; padding: 20px; color: #999;">
+        Este modelo no tiene información de pulgadas
+      </p>
+    `;
+    return;
+  }
+
+  // Filtrar solo los que tienen las MISMAS pulgadas
+  const compatibles = devices.filter((d) => {
+    if (d.inches === null || isNaN(d.inches)) return false;
+    return Math.abs(d.inches - selected.inches) < 0.1; // Tolerancia mínima
+  });
+
+  if (compatibles.length === 0) {
+    listaInches.innerHTML = `
+      <p style="text-align: center; padding: 20px; color: #999;">
+        No se encontraron modelos compatibles de ${selected.inches}"
+      </p>
+    `;
+    return;
+  }
+
+  // Crear grid simple
+  listaInches.style.display = "grid";
+  listaInches.style.gridTemplateColumns = "repeat(auto-fill, minmax(200px, 1fr))";
+  listaInches.style.gap = "15px";
+  listaInches.style.padding = "20px";
+
+  compatibles.forEach((d) => {
+    const card = document.createElement("div");
+    card.style.cssText = `
+      background: white;
+      border: 2px solid ${d.brand === selected.brand && d.model === selected.model ? '#e74c3c' : '#e0e0e0'};
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    `;
+
+    card.innerHTML = `
+      <h3 style="margin: 0 0 8px 0; color: #2c3e50; font-size: 1.1em;">${d.brand}</h3>
+      <p style="margin: 0 0 8px 0; color: #666; font-size: 0.95em;">${d.model}</p>
+      <p style="margin: 0; color: #3498db; font-weight: bold; font-size: 1.2em;">${d.inches}"</p>
+    `;
+
+    // Efecto hover
+    card.addEventListener("mouseenter", () => {
+      card.style.transform = "translateY(-3px)";
+      card.style.boxShadow = "0 8px 16px rgba(0,0,0,0.15)";
+    });
+
+    card.addEventListener("mouseleave", () => {
+      card.style.transform = "translateY(0)";
+      card.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
+    });
+
+    // Click para comparar por tamaño
+    card.addEventListener("click", () => {
+      comparePhones(d);
+      window.scrollTo({ 
+        top: document.getElementById("comparacion").offsetTop - 20, 
+        behavior: "smooth" 
+      });
+    });
+
+    listaInches.appendChild(card);
+  });
+
+  console.log(`✅ ${compatibles.length} modelos compatibles de ${selected.inches}"`);
 }
 
 // ========================================
@@ -212,6 +283,9 @@ function comparePhones(selected) {
 
   canvas.innerHTML = "";
   list.innerHTML = "";
+
+  // ✅ AGREGAR: Mostrar compatibilidad por pulgadas
+  displayInchesCompatibility(selected);
 
   if (
     typeof selected.height_mm !== "number" ||
@@ -286,60 +360,47 @@ function comparePhones(selected) {
     phone.style.position = "relative";
     phone.style.overflow = "hidden";
 
-    if (d.notch && d.notch.type && d.notch.type !== "none") {
+    // ✅ SIMPLIFICADO: Solo renderizar notch básico según tipo
+    if (d.notch_type && d.notch_type !== "none") {
       const notch = document.createElement("div");
       notch.className = "phone-notch";
-
       notch.style.position = "absolute";
-      notch.style.backgroundColor =
-        index === 0 ? "rgb(231, 76, 60)" : "rgb(52, 152, 219)";
-      notch.style.border = `3px solid ${index === 0 ? "#e74c3c" : "#3498db"}`;
-      notch.style.top = `${(d.notch.offsetTop || 0) * ESCALA_VISUAL}px`;
+      notch.style.backgroundColor = index === 0 ? "rgb(231, 76, 60)" : "rgb(52, 152, 219)";
+      notch.style.top = "5px";
+      notch.style.left = "50%";
+      notch.style.transform = "translateX(-50%)";
 
-      switch (d.notch.type) {
+      switch (d.notch_type) {
         case "infinity-v":
-          notch.style.width = `${d.notch.width * ESCALA_VISUAL}px`;
-          notch.style.height = `${d.notch.height * ESCALA_VISUAL}px`;
+          notch.style.width = "40px";
+          notch.style.height = "20px";
           notch.style.clipPath = "polygon(0 0, 50% 100%, 100% 0)";
-          notch.style.left = "50%";
-          notch.style.transform = "translateX(-50%)";
           break;
 
         case "waterdrop":
-          notch.style.width = `${d.notch.width * ESCALA_VISUAL}px`;
-          notch.style.height = `${d.notch.height * ESCALA_VISUAL}px`;
-          notch.style.borderRadius = "50% / 70%";
-          notch.style.left = "50%";
-          notch.style.transform = "translateX(-50%)";
+          notch.style.width = "20px";
+          notch.style.height = "20px";
+          notch.style.borderRadius = "50% 50% 50% 50% / 60% 60% 40% 40%";
           break;
 
         case "punch-hole":
-          notch.style.width = `${d.notch.width * ESCALA_VISUAL}px`;
-          notch.style.height = `${d.notch.height * ESCALA_VISUAL}px`;
+          notch.style.width = "15px";
+          notch.style.height = "15px";
           notch.style.borderRadius = "50%";
-          notch.style.top = `${(d.notch.offsetTop || 0) * ESCALA_VISUAL}px`;
-          notch.style.left = `${
-            (d.notch.offsetLeft || d.width_mm / 2 - d.notch.width / 2) *
-            ESCALA_VISUAL
-          }px`;
+          notch.style.left = "20px";
+          notch.style.transform = "none";
           break;
 
         case "dynamic-island":
-          notch.style.width = `${d.notch.width * ESCALA_VISUAL}px`;
-          notch.style.height = `${d.notch.height * ESCALA_VISUAL}px`;
-          notch.style.borderRadius = `${
-            d.notch.radius ? d.notch.radius * ESCALA_VISUAL : 20
-          }px`;
-          notch.style.left = "50%";
-          notch.style.transform = "translateX(-50%)";
+          notch.style.width = "80px";
+          notch.style.height = "25px";
+          notch.style.borderRadius = "20px";
           break;
 
         case "notch":
-          notch.style.width = `${d.notch.width * ESCALA_VISUAL}px`;
-          notch.style.height = `${d.notch.height * ESCALA_VISUAL}px`;
-          notch.style.borderRadius = "0 0 10px 10px";
-          notch.style.left = "50%";
-          notch.style.transform = "translateX(-50%)";
+          notch.style.width = "100px";
+          notch.style.height = "25px";
+          notch.style.borderRadius = "0 0 15px 15px";
           break;
       }
 
@@ -388,9 +449,11 @@ function comparePhones(selected) {
 function clearComparison() {
   const canvas = document.getElementById("canvas");
   const list = document.getElementById("list");
+  const listaInches = document.getElementById("lista-inches");
 
   if (canvas) canvas.innerHTML = "";
   if (list) list.innerHTML = "";
+  if (listaInches) listaInches.innerHTML = "";
 
   lastSelected = null;
 
@@ -411,7 +474,6 @@ function setupSearch() {
     return;
   }
 
-  // Variable para controlar el cierre de sugerencias
   let clickingOnSuggestion = false;
 
   buscador.addEventListener("input", (e) => {
@@ -439,7 +501,6 @@ function setupSearch() {
         const div = document.createElement("div");
         div.textContent = `${d.brand} ${d.model}`;
 
-        // ✅ CORRECCIÓN: Prevenir cierre prematuro
         div.addEventListener("mousedown", () => {
           clickingOnSuggestion = true;
         });
@@ -456,7 +517,6 @@ function setupSearch() {
         sugerencias.appendChild(div);
       });
     } else {
-      // ✅ CORRECCIÓN: Mostrar mensaje cuando no hay resultados
       sugerencias.style.display = "block";
       sugerencias.innerHTML = `
         <div style="padding: 16px; text-align: center; color: #999;">
@@ -477,7 +537,6 @@ function setupSearch() {
     });
   }
 
-  // ✅ CORRECCIÓN: Solo cerrar si NO estamos haciendo clic en una sugerencia
   buscador.addEventListener("blur", () => {
     setTimeout(() => {
       if (!clickingOnSuggestion) {
@@ -575,4 +634,3 @@ async function reloadData() {
 }
 
 window.reloadPhoneData = reloadData;
-
