@@ -53,12 +53,8 @@
     width: document.getElementById("width"),
     height: document.getElementById("height"),
     curvatura: document.getElementById("curvatura"),
+    inches: document.getElementById("inches"), // ✅ NUEVO
     notchType: document.getElementById("notchType"),
-    notchWidth: document.getElementById("notchWidth"),
-    notchHeight: document.getElementById("notchHeight"),
-    notchOffsetTop: document.getElementById("notchOffsetTop"),
-    notchOffsetLeft: document.getElementById("notchOffsetLeft"),
-    notchRadius: document.getElementById("notchRadius"),
     editingId: document.getElementById("editingId"),
     submitBtn: document.getElementById("submitBtn"),
     btnClearForm: document.getElementById("btnClearForm"),
@@ -93,16 +89,8 @@
       height_mm: parseFloat(rawPhone.height_mm) || 0,
       width_mm: parseFloat(rawPhone.width_mm) || 0,
       curvatura_mm: parseFloat(rawPhone.curvatura_mm) || 0,
+      inches: parseFloat(rawPhone.inches) || 0, // ✅ NUEVO
       notch_type: rawPhone.notch_type || "none",
-      notch_width_mm: parseFloat(rawPhone.notch_width_mm) || 0,
-      notch_height_mm: parseFloat(rawPhone.notch_height_mm) || 0,
-      notch_offset_top: parseFloat(rawPhone.notch_offset_top) || 0,
-      notch_offset_left: rawPhone.notch_offset_left
-        ? parseFloat(rawPhone.notch_offset_left)
-        : null,
-      notch_radius: rawPhone.notch_radius
-        ? parseFloat(rawPhone.notch_radius)
-        : null,
       user_id: rawPhone.user_id || null,
     };
   }
@@ -285,27 +273,15 @@
     const height = parseFloat(formData.get("height"));
     const width = parseFloat(formData.get("width"));
     const curvatura = parseFloat(formData.get("curvatura"));
-    const notchHeight = parseFloat(formData.get("notchHeight"));
-    const notchWidth = parseFloat(formData.get("notchWidth"));
+    const inches = parseFloat(formData.get("inches")); // ✅ NUEVO
 
     if (height <= 0 || width <= 0 || curvatura < 0) {
       showMessage("error", "❌ Las dimensiones deben ser valores positivos");
       return;
     }
 
-    if (notchHeight < 0 || notchWidth < 0) {
-      showMessage(
-        "error",
-        "❌ Las dimensiones del notch no pueden ser negativas"
-      );
-      return;
-    }
-
-    if (notchHeight > height || notchWidth > width) {
-      showMessage(
-        "error",
-        "❌ El notch no puede ser más grande que la pantalla"
-      );
+    if (inches <= 0) {
+      showMessage("error", "❌ Las pulgadas deben ser un valor positivo");
       return;
     }
 
@@ -315,17 +291,9 @@
       height_mm: height,
       width_mm: width,
       curvatura_mm: curvatura,
+      inches: inches, // ✅ NUEVO
       notch_type: formData.get("notchType"),
-      notch_height_mm: notchHeight,
-      notch_width_mm: notchWidth,
-      notch_offset_top: parseFloat(formData.get("notchOffsetTop")) || 0,
-      notch_offset_left: formData.get("notchOffsetLeft")
-        ? parseFloat(formData.get("notchOffsetLeft"))
-        : null,
-      notch_radius: formData.get("notchRadius")
-        ? parseFloat(formData.get("notchRadius"))
-        : null,
-      user_id: currentUser.id, // ✅ Supabase RLS usa auth.uid()
+      user_id: currentUser.id,
     };
 
     console.log("📤 Enviando con user_id:", currentUser.id);
@@ -419,12 +387,8 @@
     elements.width.value = phone.width_mm;
     elements.height.value = phone.height_mm;
     elements.curvatura.value = phone.curvatura_mm;
+    elements.inches.value = phone.inches; // ✅ NUEVO
     elements.notchType.value = phone.notch_type;
-    elements.notchWidth.value = phone.notch_width_mm;
-    elements.notchHeight.value = phone.notch_height_mm;
-    elements.notchOffsetTop.value = phone.notch_offset_top;
-    elements.notchOffsetLeft.value = phone.notch_offset_left || "";
-    elements.notchRadius.value = phone.notch_radius || "";
     elements.editingId.value = phone.id;
 
     elements.submitBtn.textContent = "ACTUALIZAR MODELO";
@@ -466,13 +430,9 @@
             <div class="model-info">
                 <p><strong>Ancho:</strong> <span>${phone.width_mm} mm</span></p>
                 <p><strong>Alto:</strong> <span>${phone.height_mm} mm</span></p>
-                <p><strong>Curvatura:</strong> <span>${
-                  phone.curvatura_mm
-                } mm</span></p>
+                <p><strong>Curvatura:</strong> <span>${phone.curvatura_mm} mm</span></p>
+                <p><strong>Pulgadas:</strong> <span>${phone.inches}"</span></p>
                 <p><strong>Notch:</strong> <span>${phone.notch_type}</span></p>
-                <p><strong>Notch Size:</strong> <span>${phone.notch_width_mm}x${
-          phone.notch_height_mm
-        } mm</span></p>
                 <p><strong>ID:</strong> <span>#${phone.id}</span></p>
             </div>
             <div class="model-actions">
