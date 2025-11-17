@@ -52,9 +52,10 @@
     model: document.getElementById("model"),
     width: document.getElementById("width"),
     height: document.getElementById("height"),
-    curvatura: document.getElementById("curvatura"),
-    inches: document.getElementById("inches"), // ✅ NUEVO
+    bisel: document.getElementById("bisel"), // ✅ CAMBIO: curvatura → bisel
+    inches: document.getElementById("inches"),
     notchType: document.getElementById("notchType"),
+    notchPosition: document.getElementById("notchPosition"), // ✅ NUEVO
     editingId: document.getElementById("editingId"),
     submitBtn: document.getElementById("submitBtn"),
     btnClearForm: document.getElementById("btnClearForm"),
@@ -88,9 +89,10 @@
       model: rawPhone.model || "",
       height_mm: parseFloat(rawPhone.height_mm) || 0,
       width_mm: parseFloat(rawPhone.width_mm) || 0,
-      curvatura_mm: parseFloat(rawPhone.curvatura_mm) || 0,
-      inches: parseFloat(rawPhone.inches) || 0, // ✅ NUEVO
+      bisel: parseFloat(rawPhone.bisel) || 0, // ✅ CAMBIO: curvatura_mm → bisel
+      inches: parseFloat(rawPhone.inches) || 0,
       notch_type: rawPhone.notch_type || "none",
+      notch_position: rawPhone.notch_position || 2, // ✅ NUEVO
       user_id: rawPhone.user_id || null,
     };
   }
@@ -272,10 +274,10 @@
 
     const height = parseFloat(formData.get("height"));
     const width = parseFloat(formData.get("width"));
-    const curvatura = parseFloat(formData.get("curvatura"));
-    const inches = parseFloat(formData.get("inches")); // ✅ NUEVO
+    const bisel = parseFloat(formData.get("bisel")); // ✅ CAMBIO: curvatura → bisel
+    const inches = parseFloat(formData.get("inches"));
 
-    if (height <= 0 || width <= 0 || curvatura < 0) {
+    if (height <= 0 || width <= 0 || bisel < 0) {
       showMessage("error", "❌ Las dimensiones deben ser valores positivos");
       return;
     }
@@ -290,13 +292,14 @@
       model: formData.get("model").trim(),
       height_mm: height,
       width_mm: width,
-      curvatura_mm: curvatura,
-      inches: inches, // ✅ NUEVO
+      bisel: bisel, // ✅ CAMBIO: curvatura_mm → bisel
+      inches: inches,
       notch_type: formData.get("notchType"),
+      notch_position: parseInt(formData.get("notchPosition")) || 2, // ✅ NUEVO
       user_id: currentUser.id,
     };
 
-    console.log("📤 Enviando con user_id:", currentUser.id);
+    console.log("📤 Enviando modelo:", phoneModel);
 
     try {
       if (editingId) {
@@ -386,10 +389,24 @@
     elements.model.value = phone.model;
     elements.width.value = phone.width_mm;
     elements.height.value = phone.height_mm;
-    elements.curvatura.value = phone.curvatura_mm;
-    elements.inches.value = phone.inches; // ✅ NUEVO
+    elements.bisel.value = phone.bisel; // ✅ CAMBIO: curvatura → bisel
+    elements.inches.value = phone.inches;
     elements.notchType.value = phone.notch_type;
     elements.editingId.value = phone.id;
+
+    // ✅ NUEVO: Mostrar selector de posición si es punch-hole
+    if (phone.notch_type === 'punch-hole') {
+      const notchPositionGroup = document.getElementById('notchPositionGroup');
+      if (notchPositionGroup) {
+        notchPositionGroup.style.display = 'block';
+        elements.notchPosition.value = phone.notch_position || 2;
+      }
+    } else {
+      const notchPositionGroup = document.getElementById('notchPositionGroup');
+      if (notchPositionGroup) {
+        notchPositionGroup.style.display = 'none';
+      }
+    }
 
     elements.submitBtn.textContent = "ACTUALIZAR MODELO";
 
@@ -401,6 +418,12 @@
     elements.modelForm.reset();
     elements.editingId.value = "";
     elements.submitBtn.textContent = "AGREGAR MODELO";
+    
+    // ✅ NUEVO: Ocultar selector de posición al limpiar
+    const notchPositionGroup = document.getElementById('notchPositionGroup');
+    if (notchPositionGroup) {
+      notchPositionGroup.style.display = 'none';
+    }
   }
 
   // ========================================
@@ -430,9 +453,10 @@
             <div class="model-info">
                 <p><strong>Ancho:</strong> <span>${phone.width_mm} mm</span></p>
                 <p><strong>Alto:</strong> <span>${phone.height_mm} mm</span></p>
-                <p><strong>Curvatura:</strong> <span>${phone.curvatura_mm} mm</span></p>
+                <p><strong>Bisel:</strong> <span>${phone.bisel} mm</span></p>
                 <p><strong>Pulgadas:</strong> <span>${phone.inches}"</span></p>
                 <p><strong>Notch:</strong> <span>${phone.notch_type}</span></p>
+                ${phone.notch_type === 'punch-hole' ? `<p><strong>Posición:</strong> <span>${phone.notch_position === 1 ? '⬅️ Izquierda' : phone.notch_position === 3 ? '➡️ Derecha' : '⬆️ Centro'}</span></p>` : ''}
                 <p><strong>ID:</strong> <span>#${phone.id}</span></p>
             </div>
             <div class="model-actions">
@@ -531,6 +555,20 @@
       deleteModel(id, brand, model);
     }
   });
+
+  // ✅ NUEVO: Mostrar/ocultar selector de posición según tipo de notch
+  if (elements.notchType) {
+    elements.notchType.addEventListener('change', function() {
+      const notchPositionGroup = document.getElementById('notchPositionGroup');
+      if (notchPositionGroup) {
+        if (this.value === 'punch-hole') {
+          notchPositionGroup.style.display = 'block';
+        } else {
+          notchPositionGroup.style.display = 'none';
+        }
+      }
+    });
+  }
 
   // ========================================
   // LISTENER DE CAMBIOS DE AUTENTICACIÓN
