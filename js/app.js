@@ -474,7 +474,7 @@ function comparePhones(selected) {
 
     const dimensions = document.createElement("div");
     dimensions.className = "phone-dimensions";
-    dimensions.textContent = `${d.height_mm}×${d.width_mm}×${d.bisel}mm`;
+    dimensions.textContent = `${d.height_mm}×${d.width_mm}mm`;
 
     if (index === 0) {
       dimensions.style.color = "#c0392b";
@@ -487,7 +487,7 @@ function comparePhones(selected) {
 
     const li = document.createElement("div");
     li.className = "list-item";
-    li.textContent = `${d.brand} ${d.model} (${d.height_mm}×${d.width_mm}×${d.bisel}mm)`;
+    li.textContent = `${d.brand} ${d.model}`;
 
     if (index === 0) {
       li.classList.add("active");
@@ -690,3 +690,4 @@ async function reloadData() {
 }
 
 window.reloadPhoneData = reloadData;
+
