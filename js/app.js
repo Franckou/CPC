@@ -36,7 +36,7 @@ let devices = [];
 let lastSelected = null;
 
 const TOLERANCIA_DIMENSIONAL = 1.0;
-const TOLERANCIA_CURVATURA = 0.5;
+const TOLERANCIA_BISEL = 0.5;
 const ESCALA_VISUAL = 2.5;
 const DEBUG_MODE = true;
 
@@ -55,9 +55,9 @@ function normalizePhoneData(rawPhone) {
     rawPhone.width_mm !== undefined && rawPhone.width_mm !== null
       ? Number(rawPhone.width_mm)
       : NaN;
-  const curv =
-    rawPhone.curvatura_mm !== undefined && rawPhone.curvatura_mm !== null
-      ? Number(rawPhone.curvatura_mm)
+  const bisel =
+    rawPhone.bisel !== undefined && rawPhone.bisel !== null
+      ? Number(rawPhone.bisel)
       : NaN;
   const inches =
     rawPhone.inches !== undefined && rawPhone.inches !== null
@@ -70,9 +70,10 @@ function normalizePhoneData(rawPhone) {
     model: rawPhone.model ? String(rawPhone.model).trim() : "",
     height_mm: isNaN(height) ? null : height,
     width_mm: isNaN(width) ? null : width,
-    curvatura_mm: isNaN(curv) ? null : curv,
+    bisel: isNaN(bisel) ? null : bisel,
     inches: isNaN(inches) ? null : inches,
     notch_type: rawPhone.notch_type || "none",
+    notch_position: rawPhone.notch_position || 2, // 1=izq, 2=centro, 3=der
     brandModelLower: `${rawPhone.brand || ""} ${
       rawPhone.model || ""
     }`.toLowerCase(),
@@ -114,7 +115,7 @@ async function loadPhones() {
       (x) =>
         x.height_mm === null || 
         x.width_mm === null || 
-        x.curvatura_mm === null ||
+        x.bisel === null ||
         x.inches === null
     );
 
@@ -167,10 +168,10 @@ function displayInchesCompatibility(selected) {
     return;
   }
 
-  // Filtrar solo los que tienen las MISMAS pulgadas
+  // Filtrar solo los que tienen EXACTAMENTE las mismas pulgadas
   const compatibles = devices.filter((d) => {
     if (d.inches === null || isNaN(d.inches)) return false;
-    return Math.abs(d.inches - selected.inches) < 0.1; // Tolerancia mínima
+    return d.inches === selected.inches;
   });
 
   if (compatibles.length === 0) {
@@ -189,33 +190,41 @@ function displayInchesCompatibility(selected) {
   listaInches.style.padding = "20px";
 
   compatibles.forEach((d) => {
+    // Detectar modo oscuro
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const isSelected = d.brand === selected.brand && d.model === selected.model;
+    
     const card = document.createElement("div");
     card.style.cssText = `
-      background: white;
-      border: 2px solid ${d.brand === selected.brand && d.model === selected.model ? '#e74c3c' : '#e0e0e0'};
+      background: ${
+        isDarkMode 
+          ? (isSelected ? 'rgba(231, 76, 60, 0.2)' : '#2a2a2a')
+          : (isSelected ? 'rgba(231, 76, 60, 0.1)' : '#f8f9fa')
+      };
+      border: 2px solid ${isSelected ? '#e74c3c' : (isDarkMode ? '#444' : '#e0e0e0')};
       border-radius: 10px;
       padding: 15px;
       text-align: center;
       transition: all 0.3s ease;
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,${isDarkMode ? '0.3' : '0.1'});
     `;
 
     card.innerHTML = `
-      <h3 style="margin: 0 0 8px 0; color: #2c3e50; font-size: 1.1em;">${d.brand}</h3>
-      <p style="margin: 0 0 8px 0; color: #666; font-size: 0.95em;">${d.model}</p>
+      <h3 style="margin: 0 0 8px 0; color: ${isDarkMode ? '#e0e0e0' : '#2c3e50'}; font-size: 1.1em;">${d.brand}</h3>
+      <p style="margin: 0 0 8px 0; color: ${isDarkMode ? '#b0b0b0' : '#666'}; font-size: 0.95em;">${d.model}</p>
       <p style="margin: 0; color: #3498db; font-weight: bold; font-size: 1.2em;">${d.inches}"</p>
     `;
 
     // Efecto hover
     card.addEventListener("mouseenter", () => {
       card.style.transform = "translateY(-3px)";
-      card.style.boxShadow = "0 8px 16px rgba(0,0,0,0.15)";
+      card.style.boxShadow = `0 8px 16px rgba(0,0,0,${isDarkMode ? '0.5' : '0.15'})`;
     });
 
     card.addEventListener("mouseleave", () => {
       card.style.transform = "translateY(0)";
-      card.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
+      card.style.boxShadow = `0 2px 8px rgba(0,0,0,${isDarkMode ? '0.3' : '0.1'})`;
     });
 
     // Click para comparar por tamaño
@@ -243,11 +252,11 @@ function debugFilter(selected, devices) {
   console.log("=== DEBUG ===");
   console.log("Teléfono seleccionado:", `${selected.brand} ${selected.model}`);
   console.log(
-    `Dimensiones: ${selected.height_mm}mm x ${selected.width_mm}mm x ${selected.curvatura_mm}mm`
+    `Dimensiones: ${selected.height_mm}mm x ${selected.width_mm}mm x ${selected.bisel}mm`
   );
   console.log("Tolerancias:", {
     dimensional: TOLERANCIA_DIMENSIONAL,
-    curvatura: TOLERANCIA_CURVATURA,
+    bisel: TOLERANCIA_BISEL,
   });
 
   devices.forEach((d) => {
@@ -257,14 +266,14 @@ function debugFilter(selected, devices) {
       typeof d.height_mm === "number" && !isNaN(d.height_mm);
     const tieneAnchoValido =
       typeof d.width_mm === "number" && !isNaN(d.width_mm);
-    const tieneCurvaturaValida =
-      typeof d.curvatura_mm === "number" && !isNaN(d.curvatura_mm);
+    const tieneBiselValido =
+      typeof d.bisel === "number" && !isNaN(d.bisel);
 
-    if (!tieneAlturaValida || !tieneAnchoValido || !tieneCurvaturaValida) {
+    if (!tieneAlturaValida || !tieneAnchoValido || !tieneBiselValido) {
       console.log(`❌ ${d.brand} ${d.model} - Datos inválidos:`, {
         altura: d.height_mm,
         ancho: d.width_mm,
-        curvatura: d.curvatura_mm,
+        bisel: d.bisel,
       });
     }
   });
@@ -290,10 +299,10 @@ function comparePhones(selected) {
   if (
     typeof selected.height_mm !== "number" ||
     typeof selected.width_mm !== "number" ||
-    typeof selected.curvatura_mm !== "number" ||
+    typeof selected.bisel !== "number" ||
     isNaN(selected.height_mm) ||
     isNaN(selected.width_mm) ||
-    isNaN(selected.curvatura_mm)
+    isNaN(selected.bisel)
   ) {
     canvas.innerHTML = "<p>Faltan datos válidos para comparar este modelo.</p>";
     console.error("Datos inválidos en teléfono seleccionado:", selected);
@@ -309,29 +318,41 @@ function comparePhones(selected) {
 
       if (typeof d.height_mm !== "number" || isNaN(d.height_mm)) return false;
       if (typeof d.width_mm !== "number" || isNaN(d.width_mm)) return false;
-      if (typeof d.curvatura_mm !== "number" || isNaN(d.curvatura_mm))
+      if (typeof d.bisel !== "number" || isNaN(d.bisel))
         return false;
 
       const altoDiff = Math.abs(d.height_mm - selected.height_mm);
       const anchoDiff = Math.abs(d.width_mm - selected.width_mm);
-      const curvaturaDiff = Math.abs(d.curvatura_mm - selected.curvatura_mm);
+      const biselDiff = Math.abs(d.bisel - selected.bisel);
 
       return (
         altoDiff <= TOLERANCIA_DIMENSIONAL &&
         anchoDiff <= TOLERANCIA_DIMENSIONAL &&
-        curvaturaDiff <= TOLERANCIA_CURVATURA
+        biselDiff <= TOLERANCIA_BISEL
       );
     })
     .sort((a, b) => {
-      const distA =
-        Math.pow(a.height_mm - selected.height_mm, 2) +
-        Math.pow(a.width_mm - selected.width_mm, 2) +
-        Math.pow(a.curvatura_mm - selected.curvatura_mm, 2);
-      const distB =
-        Math.pow(b.height_mm - selected.height_mm, 2) +
-        Math.pow(b.width_mm - selected.width_mm, 2) +
-        Math.pow(b.curvatura_mm - selected.curvatura_mm, 2);
-      return distA - distB;
+      // Prioridad 1: Diferencia en altura
+      const altoDiffA = Math.abs(a.height_mm - selected.height_mm);
+      const altoDiffB = Math.abs(b.height_mm - selected.height_mm);
+      
+      if (altoDiffA !== altoDiffB) {
+        return altoDiffA - altoDiffB;
+      }
+      
+      // Prioridad 2: Diferencia en ancho
+      const anchoDiffA = Math.abs(a.width_mm - selected.width_mm);
+      const anchoDiffB = Math.abs(b.width_mm - selected.width_mm);
+      
+      if (anchoDiffA !== anchoDiffB) {
+        return anchoDiffA - anchoDiffB;
+      }
+      
+      // Prioridad 3: Diferencia en bisel
+      const biselDiffA = Math.abs(a.bisel - selected.bisel);
+      const biselDiffB = Math.abs(b.bisel - selected.bisel);
+      
+      return biselDiffA - biselDiffB;
     });
 
   const ordenados = [selected, ...similares];
@@ -354,52 +375,87 @@ function comparePhones(selected) {
     phone.style.height = `${d.height_mm * ESCALA_VISUAL}px`;
     phone.style.width = `${d.width_mm * ESCALA_VISUAL}px`;
     phone.style.border = `3px solid ${index === 0 ? "#e74c3c" : "#3498db"}`;
-    phone.style.borderRadius = `${d.curvatura_mm * ESCALA_VISUAL}px`;
+    phone.style.borderRadius = `${d.bisel * ESCALA_VISUAL}px`;
     phone.style.backgroundColor =
       index === 0 ? "rgba(231, 76, 60, 0.1)" : "rgba(52, 152, 219, 0.1)";
     phone.style.position = "relative";
     phone.style.overflow = "hidden";
 
-    // ✅ SIMPLIFICADO: Solo renderizar notch básico según tipo
+    // ✅ RENDERIZADO DEL NOTCH (versión mejorada con adaptación a modo oscuro)
     if (d.notch_type && d.notch_type !== "none") {
       const notch = document.createElement("div");
       notch.className = "phone-notch";
+      
+      // Detectar modo oscuro
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      const canvasColor = isDarkMode ? '#121212' : '#ffffff';
+      
+      // Color del borde según si es seleccionado o no
+      const borderColor = index === 0 ? "#e74c3c" : "#3498db";
+      
+      // Estilos base
       notch.style.position = "absolute";
-      notch.style.backgroundColor = index === 0 ? "rgb(231, 76, 60)" : "rgb(52, 152, 219)";
-      notch.style.top = "5px";
-      notch.style.left = "50%";
-      notch.style.transform = "translateX(-50%)";
+      notch.style.backgroundColor = canvasColor; // Mismo color que el fondo del canvas
+      notch.style.border = `3px solid ${borderColor}`; // Mismo borde que el teléfono
+      notch.style.zIndex = "10";
+      notch.style.transition = "all 0.3s ease";
 
+      // Aplicar forma según tipo
       switch (d.notch_type) {
         case "infinity-v":
-          notch.style.width = "40px";
-          notch.style.height = "20px";
+          notch.style.width = "30px";
+          notch.style.height = "30px";
+          notch.style.top = "0";
+          notch.style.left = "50%";
+          notch.style.transform = "translateX(-50%)";
           notch.style.clipPath = "polygon(0 0, 50% 100%, 100% 0)";
+          notch.style.borderRadius = "0";
           break;
 
         case "waterdrop":
-          notch.style.width = "20px";
-          notch.style.height = "20px";
-          notch.style.borderRadius = "50% 50% 50% 50% / 60% 60% 40% 40%";
+          notch.style.width = "25px";
+          notch.style.height = "25px";
+          notch.style.top = "-11px";
+          notch.style.left = "50%";
+          notch.style.transform = "translateX(-50%)";
+          notch.style.borderRadius = "50%";
           break;
 
         case "punch-hole":
           notch.style.width = "15px";
           notch.style.height = "15px";
+          notch.style.top = "8px";
           notch.style.borderRadius = "50%";
-          notch.style.left = "20px";
-          notch.style.transform = "none";
+          
+          // Posición según notch_position: 1=izq, 2=centro, 3=der
+          const position = d.notch_position || 2;
+          if (position === 1) {
+            notch.style.left = "15px";
+            notch.style.transform = "none";
+          } else if (position === 3) {
+            notch.style.right = "15px";
+            notch.style.transform = "none";
+          } else {
+            notch.style.left = "50%";
+            notch.style.transform = "translateX(-50%)";
+          }
           break;
 
         case "dynamic-island":
           notch.style.width = "80px";
           notch.style.height = "25px";
+          notch.style.top = "5px";
+          notch.style.left = "50%";
+          notch.style.transform = "translateX(-50%)";
           notch.style.borderRadius = "20px";
           break;
 
         case "notch":
           notch.style.width = "100px";
           notch.style.height = "25px";
+          notch.style.top = "0";
+          notch.style.left = "50%";
+          notch.style.transform = "translateX(-50%)";
           notch.style.borderRadius = "0 0 15px 15px";
           break;
       }
@@ -418,7 +474,7 @@ function comparePhones(selected) {
 
     const dimensions = document.createElement("div");
     dimensions.className = "phone-dimensions";
-    dimensions.textContent = `${d.height_mm}×${d.width_mm}×${d.curvatura_mm}mm`;
+    dimensions.textContent = `${d.height_mm}×${d.width_mm}×${d.bisel}mm`;
 
     if (index === 0) {
       dimensions.style.color = "#c0392b";
@@ -431,7 +487,7 @@ function comparePhones(selected) {
 
     const li = document.createElement("div");
     li.className = "list-item";
-    li.textContent = `${d.brand} ${d.model} (${d.height_mm}×${d.width_mm}×${d.curvatura_mm}mm)`;
+    li.textContent = `${d.brand} ${d.model} (${d.height_mm}×${d.width_mm}×${d.bisel}mm)`;
 
     if (index === 0) {
       li.classList.add("active");
