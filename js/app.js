@@ -453,7 +453,7 @@ function comparePhones(selected) {
         case "notch":
           notch.style.width = "100px";
           notch.style.height = "25px";
-          notch.style.top = "0";
+          notch.style.top = "-5px";
           notch.style.left = "50%";
           notch.style.transform = "translateX(-50%)";
           notch.style.borderRadius = "0 0 15px 15px";
@@ -690,4 +690,5 @@ async function reloadData() {
 }
 
 window.reloadPhoneData = reloadData;
+
 
