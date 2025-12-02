@@ -212,9 +212,9 @@ function displayInchesCompatibility(selected) {
     `;
 
     card.innerHTML = `
-      <h3 style="margin: 0 0 8px 0; color: ${isDarkMode ? '#e0e0e0' : '#2c3e50'}; font-size: 1.1em;">${d.brand}</h3>
-      <p style="margin: 0 0 8px 0; color: ${isDarkMode ? '#b0b0b0' : '#666'}; font-size: 0.95em;">${d.model}</p>
-      <p style="margin: 0; color: #3498db; font-weight: bold; font-size: 1.2em;">${d.inches}"</p>
+    <h3 style="margin: 0 0 8px 0; color: ${isDarkMode ? '#e0e0e0' : '#666'}; font-size: 1.1em;">${d.model}</h3>
+    <p style="margin: 0 0 8px 0; color: ${isDarkMode ? '#b0b0b0' : '#2c3e50'}; font-size: 0.95em;">${d.brand}</p>
+    <p style="margin: 0; color: #3498db; font-weight: bold; font-size: 1.2em;">${d.inches}"</p>
     `;
 
     listaInches.appendChild(card);
@@ -676,3 +676,4 @@ async function reloadData() {
 }
 
 window.reloadPhoneData = reloadData;
+
