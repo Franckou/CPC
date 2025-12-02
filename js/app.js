@@ -146,10 +146,11 @@ function showNoDataMessage() {
 }
 
 // ========================================
-// ✅ NUEVA: COMPATIBILIDAD POR PULGADAS
+// COMPATIBILIDAD POR PULGADAS
 // ========================================
 
 function displayInchesCompatibility(selected) {
+
   const listaInches = document.getElementById("lista-inches");
   
   if (!listaInches) {
@@ -183,31 +184,31 @@ function displayInchesCompatibility(selected) {
     return;
   }
 
-  // Crear grid simple
-  listaInches.style.display = "grid";
-  listaInches.style.gridTemplateColumns = "repeat(auto-fill, minmax(200px, 1fr))";
-  listaInches.style.gap = "15px";
-  listaInches.style.padding = "20px";
+  compatibles.sort((a,b)=> {
+
+    const aSelected = a.brand === selected.brand && a.model === selected.model;
+    const bSelected = b.brand === selected.brand && b.model === selected.model;
+    if (aSelected) return -1;
+    if (bSelected) return 1;
+  });
+
+  listaInches.style.displayFlex = "column";
 
   compatibles.forEach((d) => {
     // Detectar modo oscuro
     const isDarkMode = document.body.classList.contains('dark-mode');
     const isSelected = d.brand === selected.brand && d.model === selected.model;
     
-    const card = document.createElement("div");
+    const card = document.createElement("li");
     card.style.cssText = `
       background: ${
         isDarkMode 
           ? (isSelected ? 'rgba(231, 76, 60, 0.2)' : '#2a2a2a')
           : (isSelected ? 'rgba(231, 76, 60, 0.1)' : '#f8f9fa')
       };
-      border: 2px solid ${isSelected ? '#e74c3c' : (isDarkMode ? '#444' : '#e0e0e0')};
-      border-radius: 10px;
-      padding: 15px;
-      text-align: center;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,0,0,${isDarkMode ? '0.3' : '0.1'});
+      color: ${isSelected ? '#e74c3c' : (isDarkMode ? '#444' : '#e0e0e0')};
+      padding: 10px;
+      margin: 0 2vw 0 0;
     `;
 
     card.innerHTML = `
@@ -215,26 +216,6 @@ function displayInchesCompatibility(selected) {
       <p style="margin: 0 0 8px 0; color: ${isDarkMode ? '#b0b0b0' : '#666'}; font-size: 0.95em;">${d.model}</p>
       <p style="margin: 0; color: #3498db; font-weight: bold; font-size: 1.2em;">${d.inches}"</p>
     `;
-
-    // Efecto hover
-    card.addEventListener("mouseenter", () => {
-      card.style.transform = "translateY(-3px)";
-      card.style.boxShadow = `0 8px 16px rgba(0,0,0,${isDarkMode ? '0.5' : '0.15'})`;
-    });
-
-    card.addEventListener("mouseleave", () => {
-      card.style.transform = "translateY(0)";
-      card.style.boxShadow = `0 2px 8px rgba(0,0,0,${isDarkMode ? '0.3' : '0.1'})`;
-    });
-
-    // Click para comparar por tamaño
-    card.addEventListener("click", () => {
-      comparePhones(d);
-      window.scrollTo({ 
-        top: document.getElementById("comparacion").offsetTop - 20, 
-        behavior: "smooth" 
-      });
-    });
 
     listaInches.appendChild(card);
   });
@@ -634,6 +615,11 @@ if (toggleBtn) {
       isDark ? "Alternar modo claro" : "Alternar modo oscuro"
     );
     localStorage.setItem("dark-mode", isDark);
+    
+    // Refrescar lista de compatibilidad si hay un dispositivo seleccionado
+    if (lastSelected) {
+      comparePhones(lastSelected);
+    }
   });
 }
 
@@ -690,5 +676,3 @@ async function reloadData() {
 }
 
 window.reloadPhoneData = reloadData;
-
-
