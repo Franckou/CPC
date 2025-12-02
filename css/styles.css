@@ -191,10 +191,17 @@ body.dark-mode #clear-search:hover {
 }
 
 /* Panel de comparación - CORREGIDO ID */
+.title-size{
+  margin: 0 0 0 3vw;
+}
+.title-inches{
+  display: flex;
+  justify-content: center;
+}
 
 #lista-inches{
   margin: auto;
-  width: 95vw;
+  width: 50vw;
   min-height: 20vw;
   height: auto;
   border-radius: 10px;
@@ -202,8 +209,13 @@ body.dark-mode #clear-search:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
 }
+
 #lista-inches:hover {
   box-shadow: 0 0 15px 1px #5e93ff;
+}
+
+li {
+  list-style: none;
 }
 
 #comparacion {
