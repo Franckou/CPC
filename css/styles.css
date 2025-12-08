@@ -131,7 +131,7 @@ body.dark-mode #clear-search:hover {
   color: #fff;
 }
 
-.blur{
+.blur {
   margin: 0;
   display: grid;
   position: absolute;
@@ -142,9 +142,9 @@ body.dark-mode #clear-search:hover {
   justify-content: center;
 }
 /* BORRA EL BLUR */
-.blur{
+/* .blur{
   display: none;
-}
+} */
 .advertencia {
   align-content: center;
 }
@@ -190,16 +190,16 @@ body.dark-mode #clear-search:hover {
   background-color: #f8f9fa;
 }
 
-/* Panel de comparación - CORREGIDO ID */
-.title-size{
+/* Panel de comparación */
+.title-size {
   margin: 0 0 0 3vw;
 }
-.title-inches{
+.title-inches {
   display: flex;
   justify-content: center;
 }
 
-#lista-inches{
+#lista-inches {
   margin: auto;
   width: 50vw;
   min-height: 20vw;
@@ -281,13 +281,12 @@ aside.listado,
 }
 
 #canvas:hover,
-.canvas, 
-#list:hover, 
-aside.listado, 
+.canvas,
+#list:hover,
+aside.listado,
 .listado {
   box-shadow: 0 0 15px 1px #5e93ff;
 }
-
 
 /* Canvas de teléfonos - CORREGIDO para usar ambos ID y clase */
 #canvas,
@@ -315,7 +314,8 @@ aside.listado,
   font-family: "Garet", sans-serif;
   padding: 20px;
   background: #ffffff;
-  display: flex;
+  /* DISPLAY FLEX PARA REACTIVAR LA VISTA PREVIA DE TELEFONOS */
+  display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -395,7 +395,7 @@ body.dark-mode .phone-dimensions {
   color: #b0b0b0;
 }
 
-body.dark-mode #lista-inches{
+body.dark-mode #lista-inches {
   border-color: #444;
 }
 body.dark-mode #canvas,
@@ -410,9 +410,9 @@ body.dark-mode .listado {
 }
 
 body.dark-mode #canvas:hover,
-body.dark-mode .canvas, 
-body.dark-mode #list:hover, 
-body.dark-mode aside.listado, 
+body.dark-mode .canvas,
+body.dark-mode #list:hover,
+body.dark-mode aside.listado,
 body.dark-mode .listado {
   box-shadow: 0 0 15px 1px #5e93ff;
 }
@@ -566,8 +566,7 @@ body.dark-mode * {
   }
   .title-size,
   .title-inches,
-  .advertencia
-  {
+  .advertencia {
     font-size: 20px;
   }
   #lista-inches {
@@ -638,5 +637,9 @@ body.dark-mode * {
   .phone:last-child {
     margin-right: 0;
   }
+  #lista-inches {
+    justify-content: center;
+    width: 90vw;
+    margin: 0;
+  }
 }
-
