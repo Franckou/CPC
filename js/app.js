@@ -113,8 +113,8 @@ async function loadPhones() {
 
     const incompletos = devices.filter(
       (x) =>
-        x.height_mm === null || 
-        x.width_mm === null || 
+        x.height_mm === null ||
+        x.width_mm === null ||
         x.bisel === null ||
         x.inches === null
     );
@@ -150,9 +150,8 @@ function showNoDataMessage() {
 // ========================================
 
 function displayInchesCompatibility(selected) {
-
   const listaInches = document.getElementById("lista-inches");
-  
+
   if (!listaInches) {
     console.error("Elemento #lista-inches no encontrado");
     return;
@@ -184,8 +183,7 @@ function displayInchesCompatibility(selected) {
     return;
   }
 
-  compatibles.sort((a,b)=> {
-
+  compatibles.sort((a, b) => {
     const aSelected = a.brand === selected.brand && a.model === selected.model;
     const bSelected = b.brand === selected.brand && b.model === selected.model;
     if (aSelected) return -1;
@@ -196,31 +194,43 @@ function displayInchesCompatibility(selected) {
 
   compatibles.forEach((d) => {
     // Detectar modo oscuro
-    const isDarkMode = document.body.classList.contains('dark-mode');
+    const isDarkMode = document.body.classList.contains("dark-mode");
     const isSelected = d.brand === selected.brand && d.model === selected.model;
-    
+
     const card = document.createElement("li");
     card.style.cssText = `
       background: ${
-        isDarkMode 
-          ? (isSelected ? 'rgba(231, 76, 60, 0.2)' : '#2a2a2a')
-          : (isSelected ? 'rgba(231, 76, 60, 0.1)' : '#f8f9fa')
+        isDarkMode
+          ? isSelected
+            ? "rgba(231, 76, 60, 0.2)"
+            : "#2a2a2a"
+          : isSelected
+          ? "rgba(231, 76, 60, 0.1)"
+          : "#f8f9fa"
       };
-      color: ${isSelected ? '#e74c3c' : (isDarkMode ? '#444' : '#e0e0e0')};
+      color: ${isSelected ? "#e74c3c" : isDarkMode ? "#444" : "#e0e0e0"};
       padding: 10px;
-      margin: 0 2vw 0 0;
+      margin: 0 3vw 0 0;
     `;
 
     card.innerHTML = `
-    <h3 style="margin: 0 0 8px 0; color: ${isDarkMode ? '#e0e0e0' : '#666'}; font-size: 1.1em;">${d.model}</h3>
-    <p style="margin: 0 0 8px 0; color: ${isDarkMode ? '#b0b0b0' : '#2c3e50'}; font-size: 0.95em;">${d.brand}</p>
-    <p style="margin: 0; color: #3498db; font-weight: bold; font-size: 1.2em;">${d.inches}"</p>
+    <h3 style="margin: 0 0 8px 0; color: ${
+      isDarkMode ? "#e0e0e0" : "#666"
+    }; font-size: 1.1em;">${d.model}</h3>
+    <p style="margin: 0 0 8px 0; color: ${
+      isDarkMode ? "#b0b0b0" : "#2c3e50"
+    }; font-size: 0.95em;">${d.brand}</p>
+    <p style="margin: 0; color: #3498db; font-weight: bold; font-size: 1.2em;">${
+      d.inches
+    }"</p>
     `;
 
     listaInches.appendChild(card);
   });
 
-  console.log(`✅ ${compatibles.length} modelos compatibles de ${selected.inches}"`);
+  console.log(
+    `✅ ${compatibles.length} modelos compatibles de ${selected.inches}"`
+  );
 }
 
 // ========================================
@@ -247,8 +257,7 @@ function debugFilter(selected, devices) {
       typeof d.height_mm === "number" && !isNaN(d.height_mm);
     const tieneAnchoValido =
       typeof d.width_mm === "number" && !isNaN(d.width_mm);
-    const tieneBiselValido =
-      typeof d.bisel === "number" && !isNaN(d.bisel);
+    const tieneBiselValido = typeof d.bisel === "number" && !isNaN(d.bisel);
 
     if (!tieneAlturaValida || !tieneAnchoValido || !tieneBiselValido) {
       console.log(`❌ ${d.brand} ${d.model} - Datos inválidos:`, {
@@ -299,8 +308,7 @@ function comparePhones(selected) {
 
       if (typeof d.height_mm !== "number" || isNaN(d.height_mm)) return false;
       if (typeof d.width_mm !== "number" || isNaN(d.width_mm)) return false;
-      if (typeof d.bisel !== "number" || isNaN(d.bisel))
-        return false;
+      if (typeof d.bisel !== "number" || isNaN(d.bisel)) return false;
 
       const altoDiff = Math.abs(d.height_mm - selected.height_mm);
       const anchoDiff = Math.abs(d.width_mm - selected.width_mm);
@@ -316,23 +324,23 @@ function comparePhones(selected) {
       // Prioridad 1: Diferencia en altura
       const altoDiffA = Math.abs(a.height_mm - selected.height_mm);
       const altoDiffB = Math.abs(b.height_mm - selected.height_mm);
-      
+
       if (altoDiffA !== altoDiffB) {
         return altoDiffA - altoDiffB;
       }
-      
+
       // Prioridad 2: Diferencia en ancho
       const anchoDiffA = Math.abs(a.width_mm - selected.width_mm);
       const anchoDiffB = Math.abs(b.width_mm - selected.width_mm);
-      
+
       if (anchoDiffA !== anchoDiffB) {
         return anchoDiffA - anchoDiffB;
       }
-      
+
       // Prioridad 3: Diferencia en bisel
       const biselDiffA = Math.abs(a.bisel - selected.bisel);
       const biselDiffB = Math.abs(b.bisel - selected.bisel);
-      
+
       return biselDiffA - biselDiffB;
     });
 
@@ -366,14 +374,14 @@ function comparePhones(selected) {
     if (d.notch_type && d.notch_type !== "none") {
       const notch = document.createElement("div");
       notch.className = "phone-notch";
-      
+
       // Detectar modo oscuro
-      const isDarkMode = document.body.classList.contains('dark-mode');
-      const canvasColor = isDarkMode ? '#121212' : '#ffffff';
-      
+      const isDarkMode = document.body.classList.contains("dark-mode");
+      const canvasColor = isDarkMode ? "#121212" : "#ffffff";
+
       // Color del borde según si es seleccionado o no
       const borderColor = index === 0 ? "#e74c3c" : "#3498db";
-      
+
       // Estilos base
       notch.style.position = "absolute";
       notch.style.backgroundColor = canvasColor; // Mismo color que el fondo del canvas
@@ -407,7 +415,7 @@ function comparePhones(selected) {
           notch.style.height = "15px";
           notch.style.top = "8px";
           notch.style.borderRadius = "50%";
-          
+
           // Posición según notch_position: 1=izq, 2=centro, 3=der
           const position = d.notch_position || 2;
           if (position === 1) {
@@ -615,7 +623,7 @@ if (toggleBtn) {
       isDark ? "Alternar modo claro" : "Alternar modo oscuro"
     );
     localStorage.setItem("dark-mode", isDark);
-    
+
     // Refrescar lista de compatibilidad si hay un dispositivo seleccionado
     if (lastSelected) {
       comparePhones(lastSelected);
@@ -676,4 +684,3 @@ async function reloadData() {
 }
 
 window.reloadPhoneData = reloadData;
-
